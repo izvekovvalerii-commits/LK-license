@@ -8,6 +8,9 @@ import Tasks from './pages/Tasks';
 import AlcoholLicenses from './pages/AlcoholLicenses';
 import TobaccoLicenses from './pages/TobaccoLicenses';
 import Stores from './pages/Stores';
+import Payments from './pages/Payments';
+import CreatePaymentTask from './pages/CreatePaymentTask';
+import CreateMassPaymentTask from './pages/CreateMassPaymentTask';
 import MainLayout from './components/Layout';
 import { authService } from './services/authService';
 import './App.css';
@@ -67,10 +70,27 @@ function App() {
             element={
               <ProtectedRoute>
                 <MainLayout>
-                  <div>
-                    <h1>Платежи</h1>
-                    <p>Модуль в разработке</p>
-                  </div>
+                  <Payments />
+                </MainLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/payments/create"
+            element={
+              <ProtectedRoute>
+                <MainLayout>
+                  <CreatePaymentTask />
+                </MainLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/payments/create-mass"
+            element={
+              <ProtectedRoute>
+                <MainLayout>
+                  <CreateMassPaymentTask />
                 </MainLayout>
               </ProtectedRoute>
             }

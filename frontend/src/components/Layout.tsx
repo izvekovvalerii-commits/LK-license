@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Layout as AntLayout, Menu, Dropdown, Space, Avatar, Button, Badge } from 'antd';
+import { Layout as AntLayout, Menu, Dropdown, Space, Avatar, Badge } from 'antd';
 import Logo from './Logo';
 import {
     DashboardOutlined,
@@ -13,6 +13,7 @@ import {
     LogoutOutlined,
     SettingOutlined,
     ShopOutlined,
+    SafetyCertificateOutlined,
 } from '@ant-design/icons';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { authService } from '../services/authService';
@@ -118,7 +119,10 @@ const MainLayout: React.FC<LayoutProps> = ({ children }) => {
             <AntLayout>
                 <Header className="site-layout-header">
                     <div className="header-content">
-                        <div className="header-title">Система управления лицензиями</div>
+                        <div className="header-title">
+                            <SafetyCertificateOutlined style={{ marginRight: 8, fontSize: '20px' }} />
+                            Портал управления лицензиями
+                        </div>
                         <Space size="large">
                             <Badge count={0} showZero>
                                 <BellOutlined style={{ fontSize: '20px', cursor: 'pointer' }} />

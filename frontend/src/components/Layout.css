@@ -13,9 +13,15 @@
 }
 
 .header-title {
-    font-size: 18px;
-    font-weight: 500;
-    color: #1890ff;
+    font-size: 20px;
+    font-weight: 600;
+    background: linear-gradient(45deg, #1890ff, #722ed1);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: flex;
+    align-items: center;
+    letter-spacing: 0.5px;
 }
 
 .site-layout-content {
