@@ -1,0 +1,23 @@
+.dashboard {
+    padding: 0;
+}
+
+.page-title {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 24px;
+    color: #1890ff;
+}
+
+.dashboard-stats {
+    margin-bottom: 24px;
+}
+
+.upcoming-deadlines-card {
+    margin-top: 16px;
+}
+
+.upcoming-deadlines-card .ant-card-head {
+    background: #fafafa;
+    font-weight: 600;
+}

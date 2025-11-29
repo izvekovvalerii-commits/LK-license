@@ -1,0 +1,35 @@
+.stores-container {
+    padding: 24px;
+}
+
+.stores-container .ant-card {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+.stores-container .ant-card-head {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 8px 8px 0 0;
+}
+
+.stores-container .ant-card-head-title {
+    color: white;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.stores-container .ant-table {
+    font-size: 14px;
+}
+
+.stores-container .ant-table-thead>tr>th {
+    background: #fafafa;
+    font-weight: 600;
+}
+
+.stores-container .ant-tag {
+    font-size: 12px;
+    padding: 2px 8px;
+    border-radius: 4px;
+}
