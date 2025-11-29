@@ -87,7 +87,56 @@ public class DataInitializer implements CommandLineRunner {
         // Create 50+ sample stores with realistic data
         if (storeRepository.count() < 10) {
             createStores();
+        } else {
+            // Update existing stores with new fields if they are missing
+            updateExistingStores();
         }
+    }
+
+    private void updateExistingStores() {
+        var stores = storeRepository.findAll();
+        java.time.LocalDate now = java.time.LocalDate.now();
+
+        for (int i = 0; i < stores.size(); i++) {
+            Store store = stores.get(i);
+
+            // Only update if MVZ is null (meaning new fields haven't been set)
+            if (store.getMvz() == null) {
+                // Generate MVZ
+                store.setMvz(String.format("13CT%04d", 1000 + i));
+
+                // ЦФО
+                store.setCfo("E1028750");
+
+                // ОКТМО
+                String[] oktmoValues = { "45339000", "45780000", "45398000", "45111000" };
+                store.setOktmo(oktmoValues[i % oktmoValues.length]);
+
+                // Has restriction
+                store.setHasRestriction(i % 5 == 0);
+
+                // Municipal area and district
+                String[] munAreas = { "Москва", "Санкт-Петербург", "Московская область", "Ленинградская область" };
+                String[] munDistricts = { "Москва", "Центральный", "Невский", "Подольск", "Красногорск" };
+                store.setMunArea(munAreas[i % munAreas.length]);
+                store.setMunDistrict(munDistricts[i % munDistricts.length]);
+
+                // БЕ
+                String[] beValues = { "ООО «Агроторг»", "ООО «Перекресток»", "ООО «Дикси Юг»", "ООО «Магнит»" };
+                store.setBe(beValues[i % beValues.length]);
+
+                // Close date
+                if (i % 10 == 9) {
+                    store.setCloseDate(now.plusMonths(1 + i % 6));
+                } else {
+                    store.setCloseDate(null);
+                }
+
+                storeRepository.save(store);
+            }
+        }
+
+        System.out.println("Updated " + stores.size() + " existing stores with new fields");
     }
 
     private void createStores() {
@@ -154,6 +203,37 @@ public class DataInitializer implements CommandLineRunner {
 
             // Email
             store.setEmail(storeNames[i].toLowerCase().replaceAll("[^a-zа-я0-9]", "") + "@example.com");
+
+            // New fields
+            // Generate MVZ (8-character код)
+            store.setMvz(String.format("13CT%04d", 1000 + i));
+
+            // ЦФО - using a standard value
+            store.setCfo("E1028750");
+
+            // ОКТМО - varying values
+            String[] oktmoValues = { "45339000", "45780000", "45398000", "45111000" };
+            store.setOktmo(oktmoValues[i % oktmoValues.length]);
+
+            // Has restriction - ~20% of stores have restrictions
+            store.setHasRestriction(i % 5 == 0);
+
+            // Municipal area and district
+            String[] munAreas = { "Москва", "Санкт-Петербург", "Московская область", "Ленинградская область" };
+            String[] munDistricts = { "Москва", "Центральный", "Невский", "Подольск", "Красногорск" };
+            store.setMunArea(munAreas[i % munAreas.length]);
+            store.setMunDistrict(munDistricts[i % munDistricts.length]);
+
+            // БЕ (Балансовая единица)
+            String[] beValues = { "ООО «Агроторг»", "ООО «Перекресток»", "ООО «Дикси Юг»", "ООО «Магнит»" };
+            store.setBe(beValues[i % beValues.length]);
+
+            // Close date - ~10% of stores are scheduled to close
+            if (i % 10 == 9) {
+                store.setCloseDate(now.plusMonths(1 + i % 6));
+            } else {
+                store.setCloseDate(null);
+            }
 
             // License expiration dates - create variety of statuses
             int licensePattern = i % 6;

@@ -5,12 +5,15 @@ import ruRU from 'antd/locale/ru_RU';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Tasks from './pages/Tasks';
+import TaskList from './pages/TaskList';
 import AlcoholLicenses from './pages/AlcoholLicenses';
 import TobaccoLicenses from './pages/TobaccoLicenses';
 import Stores from './pages/Stores';
 import Payments from './pages/Payments';
 import CreatePaymentTask from './pages/CreatePaymentTask';
 import CreateMassPaymentTask from './pages/CreateMassPaymentTask';
+import CreateAlcoholLicenseTask from './pages/CreateAlcoholLicenseTask';
+import CreateTobaccoLicenseTask from './pages/CreateTobaccoLicenseTask';
 import MainLayout from './components/Layout';
 import { authService } from './services/authService';
 import './App.css';
@@ -48,6 +51,36 @@ function App() {
               <ProtectedRoute>
                 <MainLayout>
                   <Tasks />
+                </MainLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/tasks/list"
+            element={
+              <ProtectedRoute>
+                <MainLayout>
+                  <TaskList />
+                </MainLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/tasks/create-alcohol"
+            element={
+              <ProtectedRoute>
+                <MainLayout>
+                  <CreateAlcoholLicenseTask />
+                </MainLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/tasks/create-tobacco"
+            element={
+              <ProtectedRoute>
+                <MainLayout>
+                  <CreateTobaccoLicenseTask />
                 </MainLayout>
               </ProtectedRoute>
             }

@@ -81,8 +81,16 @@ export interface TaskRequest {
 
 export interface Store {
     id: number;
+    mvz: string;
     name: string;
     address: string;
+    cfo: string;
+    oktmo: string;
+    hasRestriction: boolean;
+    munArea: string;
+    munDistrict: string;
+    be: string;
+    closeDate: string | null;
     directorPhone: string;
     inn: string;
     kpp: string;

@@ -82,11 +82,20 @@ const Stores: React.FC = () => {
             dataIndex: 'id',
             key: 'id',
             width: 60,
+            fixed: 'left' as const,
+        },
+        {
+            title: 'МВЗ',
+            dataIndex: 'mvz',
+            key: 'mvz',
+            width: 100,
+            fixed: 'left' as const,
         },
         {
             title: 'Название',
             dataIndex: 'name',
             key: 'name',
+            width: 200,
             render: (text: string) => (
                 <Space>
                     <ShopOutlined />
@@ -95,39 +104,58 @@ const Stores: React.FC = () => {
             ),
         },
         {
-            title: 'ИНН',
-            dataIndex: 'inn',
-            key: 'inn',
-            width: 150,
-        },
-        {
-            title: 'КПП',
-            dataIndex: 'kpp',
-            key: 'kpp',
-            width: 120,
-        },
-        {
             title: 'Адрес',
             dataIndex: 'address',
             key: 'address',
+            width: 300,
         },
         {
-            title: 'Контактное лицо',
-            dataIndex: 'contactPerson',
-            key: 'contactPerson',
-            width: 180,
+            title: 'ЦФО',
+            dataIndex: 'cfo',
+            key: 'cfo',
+            width: 100,
         },
         {
-            title: 'Телефон',
-            dataIndex: 'phone',
-            key: 'phone',
+            title: 'ОКТМО',
+            dataIndex: 'oktmo',
+            key: 'oktmo',
+            width: 100,
+        },
+        {
+            title: 'Есть запрет',
+            dataIndex: 'hasRestriction',
+            key: 'hasRestriction',
+            width: 100,
+            render: (hasRestriction: boolean) => (
+                <Tag color={hasRestriction ? 'red' : 'green'}>
+                    {hasRestriction ? 'Да' : 'Нет'}
+                </Tag>
+            ),
+        },
+        {
+            title: 'Мун. область',
+            dataIndex: 'munArea',
+            key: 'munArea',
             width: 150,
         },
         {
-            title: 'Email',
-            dataIndex: 'email',
-            key: 'email',
+            title: 'Мун. район',
+            dataIndex: 'munDistrict',
+            key: 'munDistrict',
+            width: 150,
+        },
+        {
+            title: 'БЕ',
+            dataIndex: 'be',
+            key: 'be',
             width: 200,
+        },
+        {
+            title: 'Дата закрытия',
+            dataIndex: 'closeDate',
+            key: 'closeDate',
+            width: 120,
+            render: (date: string) => date || '-',
         },
         {
             title: 'Лицензии',
@@ -153,6 +181,7 @@ const Stores: React.FC = () => {
             dataIndex: 'isActive',
             key: 'isActive',
             width: 100,
+            fixed: 'right' as const,
             render: (isActive: boolean) => (
                 <Tag color={isActive ? 'green' : 'red'}>
                     {isActive ? 'Активен' : 'Неактивен'}
@@ -163,6 +192,7 @@ const Stores: React.FC = () => {
             title: 'Действия',
             key: 'actions',
             width: 120,
+            fixed: 'right' as const,
             render: (_: any, record: Store) => (
                 <Space>
                     <Button

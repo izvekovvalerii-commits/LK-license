@@ -22,11 +22,35 @@ public class Store {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "mvz", length = 10)
+    private String mvz;
+
     @Column(nullable = false, length = 200)
     private String name;
 
     @Column(nullable = false, length = 300)
     private String address;
+
+    @Column(name = "cfo", length = 10)
+    private String cfo;
+
+    @Column(name = "oktmo", length = 11)
+    private String oktmo;
+
+    @Column(name = "has_restriction")
+    private Boolean hasRestriction = false;
+
+    @Column(name = "mun_area", length = 100)
+    private String munArea;
+
+    @Column(name = "mun_district", length = 100)
+    private String munDistrict;
+
+    @Column(name = "be", length = 200)
+    private String be;
+
+    @Column(name = "close_date")
+    private LocalDate closeDate;
 
     @Column(name = "director_phone", length = 20)
     private String directorPhone;
@@ -153,6 +177,70 @@ public class Store {
 
     public void setIsActive(Boolean isActive) {
         this.isActive = isActive;
+    }
+
+    public String getMvz() {
+        return mvz;
+    }
+
+    public void setMvz(String mvz) {
+        this.mvz = mvz;
+    }
+
+    public String getCfo() {
+        return cfo;
+    }
+
+    public void setCfo(String cfo) {
+        this.cfo = cfo;
+    }
+
+    public String getOktmo() {
+        return oktmo;
+    }
+
+    public void setOktmo(String oktmo) {
+        this.oktmo = oktmo;
+    }
+
+    public Boolean getHasRestriction() {
+        return hasRestriction;
+    }
+
+    public void setHasRestriction(Boolean hasRestriction) {
+        this.hasRestriction = hasRestriction;
+    }
+
+    public String getMunArea() {
+        return munArea;
+    }
+
+    public void setMunArea(String munArea) {
+        this.munArea = munArea;
+    }
+
+    public String getMunDistrict() {
+        return munDistrict;
+    }
+
+    public void setMunDistrict(String munDistrict) {
+        this.munDistrict = munDistrict;
+    }
+
+    public String getBe() {
+        return be;
+    }
+
+    public void setBe(String be) {
+        this.be = be;
+    }
+
+    public LocalDate getCloseDate() {
+        return closeDate;
+    }
+
+    public void setCloseDate(LocalDate closeDate) {
+        this.closeDate = closeDate;
     }
 
 }

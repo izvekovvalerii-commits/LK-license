@@ -39,7 +39,15 @@ public class StoreController {
                 .orElseThrow(() -> new RuntimeException("Store not found"));
 
         store.setName(storeDetails.getName());
+        store.setMvz(storeDetails.getMvz());
         store.setAddress(storeDetails.getAddress());
+        store.setCfo(storeDetails.getCfo());
+        store.setOktmo(storeDetails.getOktmo());
+        store.setHasRestriction(storeDetails.getHasRestriction());
+        store.setMunArea(storeDetails.getMunArea());
+        store.setMunDistrict(storeDetails.getMunDistrict());
+        store.setBe(storeDetails.getBe());
+        store.setCloseDate(storeDetails.getCloseDate());
         store.setInn(storeDetails.getInn());
         store.setKpp(storeDetails.getKpp());
         store.setContactPerson(storeDetails.getContactPerson());

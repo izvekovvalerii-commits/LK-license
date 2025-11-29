@@ -1,376 +1,144 @@
-import React, { useState, useEffect } from 'react';
-import { Table, Tag, Button, Space, Card, Select, Modal, Form, Input, DatePicker, message, Tooltip } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined, InfoCircleOutlined } from '@ant-design/icons';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { taskService } from '../services/taskService';
-import { storeService } from '../services/storeService';
-import { userService } from '../services/userService';
-import type { Task, TaskRequest, Store, User } from '../types';
-import { TaskStatus, LicenseType, ActionType } from '../types';
-import dayjs from 'dayjs';
+import React from 'react';
+import { Card, Row, Col } from 'antd';
+import { FileTextOutlined } from '@ant-design/icons';
+import { useNavigate } from 'react-router-dom';
+import Icon from '@ant-design/icons';
 
-const { TextArea } = Input;
+const BottleSvg = () => (
+    <svg width="1em" height="1em" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M14.6 5.8V3h-5.2v2.8L7 9.5V20c0 1.1.9 2 2 2h6c1.1 0 2-.9 2-2V9.5l-2.4-3.7zM15 20H9v-9.8l2.2-3.4V4h1.6v2.8L15 10.2V20z" />
+    </svg>
+);
+
+const CigaretteSvg = () => (
+    <svg width="1em" height="1em" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="2" y="10" width="20" height="4" rx="2" />
+        <line x1="18" y1="10" x2="18" y2="14" />
+        <path d="M18 7l-2-2" />
+        <path d="M22 7l-2-2" />
+        <path d="M14 7l-2-2" />
+    </svg>
+);
+
+const BottleIcon = (props: any) => <Icon component={BottleSvg} {...props} />;
+const CigaretteIcon = (props: any) => <Icon component={CigaretteSvg} {...props} />;
 
 const Tasks: React.FC = () => {
-    const [tasks, setTasks] = useState<Task[]>([]);
-    const [stores, setStores] = useState<Store[]>([]);
-    const [users, setUsers] = useState<User[]>([]);
-    const [loading, setLoading] = useState(false);
-    const [statusFilter, setStatusFilter] = useState<string>('all');
     const navigate = useNavigate();
-    const location = useLocation();
-    const [modalVisible, setModalVisible] = useState(false);
-    const [statusModalVisible, setStatusModalVisible] = useState(false);
-    const [editingTask, setEditingTask] = useState<Task | null>(null);
-    const [selectedTaskForStatus, setSelectedTaskForStatus] = useState<Task | null>(null);
-    const [form] = Form.useForm();
-    const [statusForm] = Form.useForm();
-
-    useEffect(() => {
-        fetchData();
-
-        // Apply filter from Dashboard navigation
-        const state = location.state as { filter?: string };
-        if (state?.filter) {
-            setStatusFilter(state.filter);
-        }
-    }, [location]);
-
-    const fetchData = async () => {
-        setLoading(true);
-        try {
-            const [tasksData, storesData, usersData] = await Promise.all([
-                taskService.getAllTasks(),
-                storeService.getAllStores(),
-                userService.getAllUsers(),
-            ]);
-            setTasks(tasksData);
-            setStores(storesData);
-            setUsers(usersData);
-        } catch (error) {
-            message.error('Ошибка загрузки данных');
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const handleCreate = () => {
-        setEditingTask(null);
-        form.resetFields();
-        setModalVisible(true);
-    };
-
-    const handleEdit = (task: Task) => {
-        setEditingTask(task);
-        form.setFieldsValue({
-            ...task,
-            deadlineDate: task.deadlineDate ? dayjs(task.deadlineDate) : null,
-        });
-        setModalVisible(true);
-    };
-
-    const handleStatusChangeClick = (task: Task) => {
-        setSelectedTaskForStatus(task);
-        statusForm.setFieldsValue({
-            status: task.status,
-            statusReason: task.statusReason
-        });
-        setStatusModalVisible(true);
-    };
-
-    const handleDelete = async (id: number) => {
-        Modal.confirm({
-            title: 'Удалить задачу?',
-            content: 'Вы уверены, что хотите удалить эту задачу?',
-            okText: 'Да',
-            cancelText: 'Отмена',
-            onOk: async () => {
-                try {
-                    await taskService.deleteTask(id);
-                    message.success('Задача удалена');
-                    fetchData();
-                } catch (error) {
-                    message.error('Ошибка удаления задачи');
-                }
-            },
-        });
-    };
-
-    const handleSubmit = async (values: any) => {
-        try {
-            const taskData: TaskRequest = {
-                ...values,
-                deadlineDate: values.deadlineDate ? values.deadlineDate.format('YYYY-MM-DD') : undefined,
-            };
-
-            if (editingTask) {
-                await taskService.updateTask(editingTask.id, taskData);
-                message.success('Задача обновлена');
-            } else {
-                await taskService.createTask(taskData);
-                message.success('Задача создана');
-            }
-
-            setModalVisible(false);
-            fetchData();
-        } catch (error) {
-            message.error('Ошибка сохранения задачи');
-        }
-    };
-
-    const handleStatusSubmit = async (values: any) => {
-        if (!selectedTaskForStatus) return;
-
-        try {
-            // We need to update the status. Since we don't have a direct status update endpoint that takes reason in the frontend service yet,
-            // we can use updateTask if we add status/reason to TaskRequest, OR we can update the service.
-            // Let's assume we update the task fully or use a specific endpoint.
-            // Ideally, we should use updateTaskStatus from service, but we need to update it to accept reason.
-            // For now, let's use updateTask as it's more flexible if we added fields to DTO.
-
-            // Wait, I updated the backend TaskRequest to include status and statusReason.
-            // So I can use taskService.updateTask.
-
-            const taskData: TaskRequest = {
-                title: selectedTaskForStatus.title, // Required fields
-                licenseType: selectedTaskForStatus.licenseType,
-                actionType: selectedTaskForStatus.actionType,
-                status: values.status,
-                statusReason: values.statusReason
-            };
-
-            await taskService.updateTask(selectedTaskForStatus.id, taskData);
-            message.success('Статус обновлен');
-            setStatusModalVisible(false);
-            fetchData();
-        } catch (error) {
-            message.error('Ошибка обновления статуса');
-        }
-    };
-
-    const statusColors: Record<TaskStatus, string> = {
-        [TaskStatus.ASSIGNED]: 'blue',
-        [TaskStatus.IN_PROGRESS]: 'processing',
-        [TaskStatus.SUSPENDED]: 'warning',
-        [TaskStatus.DONE]: 'success',
-    };
-
-    const statusLabels: Record<TaskStatus, string> = {
-        [TaskStatus.ASSIGNED]: 'Назначена',
-        [TaskStatus.IN_PROGRESS]: 'В работе',
-        [TaskStatus.SUSPENDED]: 'Приостановлена',
-        [TaskStatus.DONE]: 'Готово',
-    };
-
-    const columns = [
-        {
-            title: 'Название',
-            dataIndex: 'title',
-            key: 'title',
-        },
-        {
-            title: 'Магазин',
-            dataIndex: 'storeName',
-            key: 'storeName',
-        },
-        {
-            title: 'Ответственный',
-            dataIndex: 'assigneeName',
-            key: 'assigneeName',
-            render: (text: string) => text || '-',
-        },
-        {
-            title: 'Тип',
-            dataIndex: 'licenseType',
-            key: 'licenseType',
-            render: (type: LicenseType) => type === LicenseType.ALCOHOL ? 'Алкогольная' : 'Табачная',
-        },
-        {
-            title: 'Действие',
-            dataIndex: 'actionType',
-            key: 'actionType',
-            render: (type: ActionType) => type === ActionType.NEW ? 'Новая' : 'Продление',
-        },
-        {
-            title: 'Статус',
-            dataIndex: 'status',
-            key: 'status',
-            render: (status: TaskStatus, record: Task) => (
-                <Space>
-                    <Tag color={statusColors[status]}>{statusLabels[status]}</Tag>
-                    {status === TaskStatus.SUSPENDED && record.statusReason && (
-                        <Tooltip title={record.statusReason}>
-                            <InfoCircleOutlined style={{ color: '#faad14' }} />
-                        </Tooltip>
-                    )}
-                    <Button size="small" type="link" onClick={() => handleStatusChangeClick(record)}>
-                        Сменить
-                    </Button>
-                </Space>
-            ),
-        },
-        {
-            title: 'Срок',
-            dataIndex: 'deadlineDate',
-            key: 'deadlineDate',
-            render: (date: string) => date ? dayjs(date).format('DD.MM.YYYY') : '-',
-        },
-        {
-            title: 'Действия',
-            key: 'actions',
-            render: (_: any, record: Task) => (
-                <Space>
-                    <Button icon={<EditOutlined />} size="small" onClick={() => handleEdit(record)} />
-                    <Button icon={<DeleteOutlined />} size="small" danger onClick={() => handleDelete(record.id)} />
-                </Space>
-            ),
-        },
-    ];
-
-    // Filter tasks based on selected status
-    const getFilteredTasks = () => {
-        if (statusFilter === 'all') return tasks;
-
-        if (statusFilter === 'assigned') {
-            return tasks.filter(t => t.status === TaskStatus.ASSIGNED);
-        }
-        if (statusFilter === 'completed') {
-            return tasks.filter(t => t.status === TaskStatus.DONE);
-        }
-        if (statusFilter === 'in_progress') {
-            return tasks.filter(t => t.status === TaskStatus.IN_PROGRESS);
-        }
-        if (statusFilter === 'suspended') {
-            return tasks.filter(t => t.status === TaskStatus.SUSPENDED);
-        }
-
-        return tasks;
-    };
-
-    const filteredTasks = getFilteredTasks();
 
     return (
-        <div style={{ padding: '24px' }}>
-            <Card>
-                <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <h1 style={{ margin: 0 }}>Задачи</h1>
-                    <Space>
-                        <Select
-                            value={statusFilter}
-                            onChange={setStatusFilter}
-                            style={{ width: 200 }}
-                            options={[
-                                { value: 'all', label: 'Все задачи' },
-                                { value: 'assigned', label: 'Назначены' },
-                                { value: 'in_progress', label: 'В работе' },
-                                { value: 'suspended', label: 'Приостановленные' },
-                                { value: 'completed', label: 'Завершенные' },
-                            ]}
-                        />
-                        <Button type="primary" icon={<PlusOutlined />} onClick={handleCreate}>
-                            Создать задачу
-                        </Button>
-                    </Space>
-                </div>
-                <Table
-                    columns={columns}
-                    dataSource={filteredTasks}
-                    rowKey="id"
-                    loading={loading}
-                    pagination={{
-                        pageSize: 10,
-                        showSizeChanger: true,
-                        showTotal: (total) => `Всего: ${total} задач`,
-                    }}
-                />
-            </Card>
+        <div style={{ padding: '24px', height: '100%', display: 'flex', flexDirection: 'column' }}>
+            <h1 style={{ marginBottom: 32, fontSize: '28px', fontWeight: 600, color: '#1f1f1f' }}>Задачи</h1>
 
-            <Modal
-                title={editingTask ? 'Редактировать задачу' : 'Создать задачу'}
-                open={modalVisible}
-                onCancel={() => setModalVisible(false)}
-                onOk={() => form.submit()}
-                width={600}
-            >
-                <Form form={form} layout="vertical" onFinish={handleSubmit}>
-                    <Form.Item name="title" label="Название" rules={[{ required: true, message: 'Введите название' }]}>
-                        <Input />
-                    </Form.Item>
-
-                    <Form.Item name="description" label="Описание">
-                        <TextArea rows={3} />
-                    </Form.Item>
-
-                    <Form.Item name="licenseType" label="Тип лицензии" rules={[{ required: true }]}>
-                        <Select>
-                            <Select.Option value={LicenseType.ALCOHOL}>Алкогольная</Select.Option>
-                            <Select.Option value={LicenseType.TOBACCO}>Табачная</Select.Option>
-                        </Select>
-                    </Form.Item>
-
-                    <Form.Item name="actionType" label="Действие" rules={[{ required: true }]}>
-                        <Select>
-                            <Select.Option value={ActionType.NEW}>Получение новой</Select.Option>
-                            <Select.Option value={ActionType.RENEWAL}>Продление</Select.Option>
-                        </Select>
-                    </Form.Item>
-
-                    <Form.Item name="storeId" label="Магазин">
-                        <Select allowClear>
-                            {stores.map(store => (
-                                <Select.Option key={store.id} value={store.id}>{store.name}</Select.Option>
-                            ))}
-                        </Select>
-                    </Form.Item>
-
-                    <Form.Item name="assigneeId" label="Ответственный">
-                        <Select allowClear>
-                            {users.map(user => (
-                                <Select.Option key={user.id} value={user.id}>{user.fullName}</Select.Option>
-                            ))}
-                        </Select>
-                    </Form.Item>
-
-                    <Form.Item name="deadlineDate" label="Срок выполнения">
-                        <DatePicker style={{ width: '100%' }} />
-                    </Form.Item>
-                </Form>
-            </Modal>
-
-            <Modal
-                title="Смена статуса"
-                open={statusModalVisible}
-                onCancel={() => setStatusModalVisible(false)}
-                onOk={() => statusForm.submit()}
-            >
-                <Form form={statusForm} layout="vertical" onFinish={handleStatusSubmit}>
-                    <Form.Item name="status" label="Статус" rules={[{ required: true }]}>
-                        <Select>
-                            <Select.Option value={TaskStatus.ASSIGNED}>{statusLabels[TaskStatus.ASSIGNED]}</Select.Option>
-                            <Select.Option value={TaskStatus.IN_PROGRESS}>{statusLabels[TaskStatus.IN_PROGRESS]}</Select.Option>
-                            <Select.Option value={TaskStatus.SUSPENDED}>{statusLabels[TaskStatus.SUSPENDED]}</Select.Option>
-                            <Select.Option value={TaskStatus.DONE}>{statusLabels[TaskStatus.DONE]}</Select.Option>
-                        </Select>
-                    </Form.Item>
-
-                    <Form.Item
-                        noStyle
-                        shouldUpdate={(prevValues, currentValues) => prevValues.status !== currentValues.status}
-                    >
-                        {({ getFieldValue }) =>
-                            getFieldValue('status') === TaskStatus.SUSPENDED ? (
-                                <Form.Item
-                                    name="statusReason"
-                                    label="Причина приостановки"
-                                    rules={[{ required: true, message: 'Укажите причину приостановки' }]}
-                                >
-                                    <TextArea rows={3} />
-                                </Form.Item>
-                            ) : null
-                        }
-                    </Form.Item>
-                </Form>
-            </Modal>
+            <div style={{ flex: 1, display: 'flex', alignItems: 'flex-start' }}>
+                <Row gutter={[32, 32]} style={{ width: '100%' }}>
+                    <Col span={8}>
+                        <Card
+                            hoverable
+                            onClick={() => navigate('/tasks/list')}
+                            style={{
+                                cursor: 'pointer',
+                                textAlign: 'center',
+                                background: '#fff',
+                                height: '280px',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                justifyContent: 'center',
+                                borderRadius: '16px',
+                                boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
+                                border: '1px solid #f0f0f0',
+                                transition: 'all 0.3s ease'
+                            }}
+                            bodyStyle={{ padding: '32px' }}
+                        >
+                            <div style={{
+                                background: '#e6f7ff',
+                                width: '80px',
+                                height: '80px',
+                                borderRadius: '50%',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                margin: '0 auto 24px'
+                            }}>
+                                <FileTextOutlined style={{ fontSize: '40px', color: '#1890ff' }} />
+                            </div>
+                            <div style={{ fontSize: '20px', fontWeight: 600, marginBottom: 8, color: '#262626' }}>Мои задачи</div>
+                            <div style={{ color: '#8c8c8c', fontSize: '16px' }}>Все задачи пользователя</div>
+                        </Card>
+                    </Col>
+                    <Col span={8}>
+                        <Card
+                            hoverable
+                            onClick={() => navigate('/tasks/create-alcohol')}
+                            style={{
+                                cursor: 'pointer',
+                                textAlign: 'center',
+                                background: '#fff',
+                                height: '280px',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                justifyContent: 'center',
+                                borderRadius: '16px',
+                                boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
+                                border: '1px solid #f0f0f0',
+                                transition: 'all 0.3s ease'
+                            }}
+                            bodyStyle={{ padding: '32px' }}
+                        >
+                            <div style={{
+                                background: '#f6ffed',
+                                width: '80px',
+                                height: '80px',
+                                borderRadius: '50%',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                margin: '0 auto 24px'
+                            }}>
+                                <BottleIcon style={{ fontSize: '40px', color: '#52c41a' }} />
+                            </div>
+                            <div style={{ fontSize: '20px', fontWeight: 600, marginBottom: 8, color: '#262626' }}>Получить алкогольную лицензию</div>
+                            <div style={{ color: '#8c8c8c', fontSize: '16px' }}>Создать задачу на алкоголь</div>
+                        </Card>
+                    </Col>
+                    <Col span={8}>
+                        <Card
+                            hoverable
+                            onClick={() => navigate('/tasks/create-tobacco')}
+                            style={{
+                                cursor: 'pointer',
+                                textAlign: 'center',
+                                background: '#fff',
+                                height: '280px',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                justifyContent: 'center',
+                                borderRadius: '16px',
+                                boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
+                                border: '1px solid #f0f0f0',
+                                transition: 'all 0.3s ease'
+                            }}
+                            bodyStyle={{ padding: '32px' }}
+                        >
+                            <div style={{
+                                background: '#fff7e6',
+                                width: '80px',
+                                height: '80px',
+                                borderRadius: '50%',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                margin: '0 auto 24px'
+                            }}>
+                                <CigaretteIcon style={{ fontSize: '40px', color: '#faad14' }} />
+                            </div>
+                            <div style={{ fontSize: '20px', fontWeight: 600, marginBottom: 8, color: '#262626' }}>Получить табачную лицензию</div>
+                            <div style={{ color: '#8c8c8c', fontSize: '16px' }}>Создать задачу на табак</div>
+                        </Card>
+                    </Col>
+                </Row>
+            </div>
         </div>
     );
 };
