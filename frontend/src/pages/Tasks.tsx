@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { Table, Button, Space, Tag, Modal, Form, Input, Select, DatePicker, message, Tooltip } from 'antd';
+import React, { useState, useEffect } from 'react';
+import { Table, Tag, Button, Space, Card, Select, Modal, Form, Input, DatePicker, message, Tooltip } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined, InfoCircleOutlined } from '@ant-design/icons';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { taskService } from '../services/taskService';
 import { storeService } from '../services/storeService';
 import { userService } from '../services/userService';
@@ -15,6 +16,9 @@ const Tasks: React.FC = () => {
     const [stores, setStores] = useState<Store[]>([]);
     const [users, setUsers] = useState<User[]>([]);
     const [loading, setLoading] = useState(false);
+    const [statusFilter, setStatusFilter] = useState<string>('all');
+    const navigate = useNavigate();
+    const location = useLocation();
     const [modalVisible, setModalVisible] = useState(false);
     const [statusModalVisible, setStatusModalVisible] = useState(false);
     const [editingTask, setEditingTask] = useState<Task | null>(null);
@@ -24,7 +28,13 @@ const Tasks: React.FC = () => {
 
     useEffect(() => {
         fetchData();
-    }, []);
+
+        // Apply filter from Dashboard navigation
+        const state = location.state as { filter?: string };
+        if (state?.filter) {
+            setStatusFilter(state.filter);
+        }
+    }, [location]);
 
     const fetchData = async () => {
         setLoading(true);
@@ -217,22 +227,63 @@ const Tasks: React.FC = () => {
         },
     ];
 
-    return (
-        <div>
-            <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <h1 style={{ margin: 0, fontSize: 24, fontWeight: 600, color: '#1890ff' }}>Задачи на лицензирование</h1>
-                <Button type="primary" icon={<PlusOutlined />} onClick={handleCreate}>
-                    Создать задачу
-                </Button>
-            </div>
+    // Filter tasks based on selected status
+    const getFilteredTasks = () => {
+        if (statusFilter === 'all') return tasks;
 
-            <Table
-                columns={columns}
-                dataSource={tasks}
-                rowKey="id"
-                loading={loading}
-                pagination={{ pageSize: 10 }}
-            />
+        if (statusFilter === 'active') {
+            return tasks.filter(t => t.status !== TaskStatus.DONE);
+        }
+        if (statusFilter === 'completed') {
+            return tasks.filter(t => t.status === TaskStatus.DONE);
+        }
+        if (statusFilter === 'in_progress') {
+            return tasks.filter(t => t.status === TaskStatus.IN_PROGRESS);
+        }
+        if (statusFilter === 'suspended') {
+            return tasks.filter(t => t.status === TaskStatus.SUSPENDED);
+        }
+
+        return tasks;
+    };
+
+    const filteredTasks = getFilteredTasks();
+
+    return (
+        <div style={{ padding: '24px' }}>
+            <Card>
+                <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <h1 style={{ margin: 0 }}>Задачи</h1>
+                    <Space>
+                        <Select
+                            value={statusFilter}
+                            onChange={setStatusFilter}
+                            style={{ width: 200 }}
+                            options={[
+                                { value: 'all', label: 'Все задачи' },
+                                { value: 'active', label: 'Активные' },
+                                { value: 'in_progress', label: 'В работе' },
+                                { value: 'suspended', label: 'Приостановленные' },
+                                { value: 'completed', label: 'Завершенные' },
+                            ]}
+                        />
+                        <Button type="primary" icon={<PlusOutlined />} onClick={handleCreate}>
+                            Создать задачу
+                        </Button>
+                    </Space>
+                </div>
+                <Table
+                    columns={columns}
+                    dataSource={filteredTasks}
+                    rowKey="id"
+                    loading={loading}
+                    pagination={{
+                        pageSize: 10,
+                        showSizeChanger: true,
+                        showTotal: (total) => `Всего: ${total} задач`,
+                    }}
+                />
+            </Card>
 
             <Modal
                 title={editingTask ? 'Редактировать задачу' : 'Создать задачу'}

@@ -5,7 +5,9 @@ import {
     DollarOutlined,
     CheckCircleOutlined,
     ClockCircleOutlined,
+    PauseCircleOutlined,
 } from '@ant-design/icons';
+import { useNavigate } from 'react-router-dom';
 import { taskService } from '../services/taskService';
 import type { Task } from '../types';
 import { TaskStatus } from '../types';
@@ -16,12 +18,13 @@ const Dashboard: React.FC = () => {
     const [tasks, setTasks] = useState<Task[]>([]);
     const [loading, setLoading] = useState(false);
     const [upcomingDeadlines, setUpcomingDeadlines] = useState<Task[]>([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
-        fetchData();
+        loadTasks();
     }, []);
 
-    const fetchData = async () => {
+    const loadTasks = async () => {
         setLoading(true);
         try {
             const [allTasks, deadlines] = await Promise.all([
@@ -44,6 +47,9 @@ const Dashboard: React.FC = () => {
     const completedTasks = tasks.filter(t => t.status === TaskStatus.DONE).length;
     const inProgressTasks = tasks.filter(t =>
         t.status === TaskStatus.IN_PROGRESS
+    ).length;
+    const suspendedTasks = tasks.filter(t =>
+        t.status === TaskStatus.SUSPENDED
     ).length;
 
     const statusColors: Record<TaskStatus, string> = {
@@ -108,29 +114,40 @@ const Dashboard: React.FC = () => {
         <div className="dashboard">
             <h1 className="page-title">Главная панель</h1>
 
-            <Row gutter={[16, 16]} className="dashboard-stats">
-                <Col xs={24} sm={12} lg={6}>
-                    <Card>
+            <Row gutter={16} style={{ marginBottom: 24 }}>
+                <Col xs={24} sm={12} lg={6} xl={4}>
+                    <Card
+                        hoverable
+                        onClick={() => navigate('/tasks')}
+                        style={{ cursor: 'pointer' }}
+                    >
                         <Statistic
                             title="Всего задач"
                             value={totalTasks}
                             prefix={<FileTextOutlined />}
+                        />
+                    </Card>
+                </Col>
+                <Col xs={24} sm={12} lg={6} xl={4}>
+                    <Card
+                        hoverable
+                        onClick={() => navigate('/tasks', { state: { filter: 'active' } })}
+                        style={{ cursor: 'pointer' }}
+                    >
+                        <Statistic
+                            title="Активные"
+                            value={activeTasks}
+                            prefix={<ClockCircleOutlined />}
                             valueStyle={{ color: '#1890ff' }}
                         />
                     </Card>
                 </Col>
-                <Col xs={24} sm={12} lg={6}>
-                    <Card>
-                        <Statistic
-                            title="Активных задач"
-                            value={activeTasks}
-                            prefix={<ClockCircleOutlined />}
-                            valueStyle={{ color: '#faad14' }}
-                        />
-                    </Card>
-                </Col>
-                <Col xs={24} sm={12} lg={6}>
-                    <Card>
+                <Col xs={24} sm={12} lg={6} xl={4}>
+                    <Card
+                        hoverable
+                        onClick={() => navigate('/tasks', { state: { filter: 'completed' } })}
+                        style={{ cursor: 'pointer' }}
+                    >
                         <Statistic
                             title="Завершено"
                             value={completedTasks}
@@ -139,13 +156,31 @@ const Dashboard: React.FC = () => {
                         />
                     </Card>
                 </Col>
-                <Col xs={24} sm={12} lg={6}>
-                    <Card>
+                <Col xs={24} sm={12} lg={6} xl={4}>
+                    <Card
+                        hoverable
+                        onClick={() => navigate('/tasks', { state: { filter: 'in_progress' } })}
+                        style={{ cursor: 'pointer' }}
+                    >
                         <Statistic
                             title="В работе"
                             value={inProgressTasks}
                             prefix={<DollarOutlined />}
                             valueStyle={{ color: '#ff4d4f' }}
+                        />
+                    </Card>
+                </Col>
+                <Col xs={24} sm={12} lg={6} xl={4}>
+                    <Card
+                        hoverable
+                        onClick={() => navigate('/tasks', { state: { filter: 'suspended' } })}
+                        style={{ cursor: 'pointer' }}
+                    >
+                        <Statistic
+                            title="Приостановлены"
+                            value={suspendedTasks}
+                            prefix={<PauseCircleOutlined />}
+                            valueStyle={{ color: '#faad14' }}
                         />
                     </Card>
                 </Col>
