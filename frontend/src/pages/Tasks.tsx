@@ -231,8 +231,8 @@ const Tasks: React.FC = () => {
     const getFilteredTasks = () => {
         if (statusFilter === 'all') return tasks;
 
-        if (statusFilter === 'active') {
-            return tasks.filter(t => t.status !== TaskStatus.DONE);
+        if (statusFilter === 'assigned') {
+            return tasks.filter(t => t.status === TaskStatus.ASSIGNED);
         }
         if (statusFilter === 'completed') {
             return tasks.filter(t => t.status === TaskStatus.DONE);
@@ -261,7 +261,7 @@ const Tasks: React.FC = () => {
                             style={{ width: 200 }}
                             options={[
                                 { value: 'all', label: 'Все задачи' },
-                                { value: 'active', label: 'Активные' },
+                                { value: 'assigned', label: 'Назначены' },
                                 { value: 'in_progress', label: 'В работе' },
                                 { value: 'suspended', label: 'Приостановленные' },
                                 { value: 'completed', label: 'Завершенные' },

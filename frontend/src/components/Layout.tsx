@@ -1,5 +1,7 @@
+
 import React, { useState } from 'react';
-import { Layout as AntLayout, Menu, Avatar, Dropdown, Space, Badge } from 'antd';
+import { Layout as AntLayout, Menu, Dropdown, Space, Avatar, Button, Badge } from 'antd';
+import Logo from './Logo';
 import {
     DashboardOutlined,
     FileTextOutlined,
@@ -105,9 +107,7 @@ const MainLayout: React.FC<LayoutProps> = ({ children }) => {
     return (
         <AntLayout style={{ minHeight: '100vh' }}>
             <Sider collapsible collapsed={collapsed} onCollapse={setCollapsed} theme="dark">
-                <div className="logo">
-                    {collapsed ? 'ПЛ' : 'Портал Лицензирования'}
-                </div>
+                <Logo collapsed={collapsed} />
                 <Menu
                     theme="dark"
                     mode="inline"

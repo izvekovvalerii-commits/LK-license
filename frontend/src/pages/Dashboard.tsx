@@ -41,8 +41,8 @@ const Dashboard: React.FC = () => {
     };
 
     const totalTasks = tasks.length;
-    const activeTasks = tasks.filter(t =>
-        t.status !== TaskStatus.DONE
+    const assignedTasks = tasks.filter(t =>
+        t.status === TaskStatus.ASSIGNED
     ).length;
     const completedTasks = tasks.filter(t => t.status === TaskStatus.DONE).length;
     const inProgressTasks = tasks.filter(t =>
@@ -114,12 +114,12 @@ const Dashboard: React.FC = () => {
         <div className="dashboard">
             <h1 className="page-title">Главная панель</h1>
 
-            <Row gutter={16} style={{ marginBottom: 24 }}>
-                <Col xs={24} sm={12} lg={6} xl={4}>
+            <Row gutter={16} style={{ marginBottom: 24, display: 'flex' }}>
+                <Col flex="1" style={{ minWidth: '200px' }}>
                     <Card
                         hoverable
                         onClick={() => navigate('/tasks')}
-                        style={{ cursor: 'pointer' }}
+                        style={{ cursor: 'pointer', height: '100%' }}
                     >
                         <Statistic
                             title="Всего задач"
@@ -128,39 +128,25 @@ const Dashboard: React.FC = () => {
                         />
                     </Card>
                 </Col>
-                <Col xs={24} sm={12} lg={6} xl={4}>
+                <Col flex="1" style={{ minWidth: '200px' }}>
                     <Card
                         hoverable
-                        onClick={() => navigate('/tasks', { state: { filter: 'active' } })}
-                        style={{ cursor: 'pointer' }}
+                        onClick={() => navigate('/tasks', { state: { filter: 'assigned' } })}
+                        style={{ cursor: 'pointer', height: '100%' }}
                     >
                         <Statistic
-                            title="Активные"
-                            value={activeTasks}
+                            title="Назначены"
+                            value={assignedTasks}
                             prefix={<ClockCircleOutlined />}
                             valueStyle={{ color: '#1890ff' }}
                         />
                     </Card>
                 </Col>
-                <Col xs={24} sm={12} lg={6} xl={4}>
-                    <Card
-                        hoverable
-                        onClick={() => navigate('/tasks', { state: { filter: 'completed' } })}
-                        style={{ cursor: 'pointer' }}
-                    >
-                        <Statistic
-                            title="Завершено"
-                            value={completedTasks}
-                            prefix={<CheckCircleOutlined />}
-                            valueStyle={{ color: '#52c41a' }}
-                        />
-                    </Card>
-                </Col>
-                <Col xs={24} sm={12} lg={6} xl={4}>
+                <Col flex="1" style={{ minWidth: '200px' }}>
                     <Card
                         hoverable
                         onClick={() => navigate('/tasks', { state: { filter: 'in_progress' } })}
-                        style={{ cursor: 'pointer' }}
+                        style={{ cursor: 'pointer', height: '100%' }}
                     >
                         <Statistic
                             title="В работе"
@@ -170,17 +156,31 @@ const Dashboard: React.FC = () => {
                         />
                     </Card>
                 </Col>
-                <Col xs={24} sm={12} lg={6} xl={4}>
+                <Col flex="1" style={{ minWidth: '200px' }}>
                     <Card
                         hoverable
                         onClick={() => navigate('/tasks', { state: { filter: 'suspended' } })}
-                        style={{ cursor: 'pointer' }}
+                        style={{ cursor: 'pointer', height: '100%' }}
                     >
                         <Statistic
                             title="Приостановлены"
                             value={suspendedTasks}
                             prefix={<PauseCircleOutlined />}
                             valueStyle={{ color: '#faad14' }}
+                        />
+                    </Card>
+                </Col>
+                <Col flex="1" style={{ minWidth: '200px' }}>
+                    <Card
+                        hoverable
+                        onClick={() => navigate('/tasks', { state: { filter: 'completed' } })}
+                        style={{ cursor: 'pointer', height: '100%' }}
+                    >
+                        <Statistic
+                            title="Завершено"
+                            value={completedTasks}
+                            prefix={<CheckCircleOutlined />}
+                            valueStyle={{ color: '#52c41a' }}
                         />
                     </Card>
                 </Col>
