@@ -10,6 +10,7 @@ import {
     UserOutlined,
     LogoutOutlined,
     SettingOutlined,
+    ShopOutlined,
 } from '@ant-design/icons';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { authService } from '../services/authService';
@@ -74,6 +75,11 @@ const MainLayout: React.FC<LayoutProps> = ({ children }) => {
             key: '/payments',
             icon: <DollarOutlined />,
             label: <Link to="/payments">Платежи</Link>,
+        },
+        {
+            key: '/stores',
+            icon: <ShopOutlined />,
+            label: <Link to="/stores">Магазины</Link>,
         },
         {
             key: '/references',

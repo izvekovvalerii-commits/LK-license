@@ -7,6 +7,7 @@ import Dashboard from './pages/Dashboard';
 import Tasks from './pages/Tasks';
 import AlcoholLicenses from './pages/AlcoholLicenses';
 import TobaccoLicenses from './pages/TobaccoLicenses';
+import Stores from './pages/Stores';
 import MainLayout from './components/Layout';
 import { authService } from './services/authService';
 import './App.css';
@@ -70,6 +71,16 @@ function App() {
                     <h1>Платежи</h1>
                     <p>Модуль в разработке</p>
                   </div>
+                </MainLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/stores"
+            element={
+              <ProtectedRoute>
+                <MainLayout>
+                  <Stores />
                 </MainLayout>
               </ProtectedRoute>
             }
