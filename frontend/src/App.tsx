@@ -9,11 +9,16 @@ import TaskList from './pages/TaskList';
 import AlcoholLicenses from './pages/AlcoholLicenses';
 import TobaccoLicenses from './pages/TobaccoLicenses';
 import Stores from './pages/Stores';
+import Documents from './pages/Documents';
 import Payments from './pages/Payments';
 import CreatePaymentTask from './pages/CreatePaymentTask';
 import CreateMassPaymentTask from './pages/CreateMassPaymentTask';
 import CreateAlcoholLicenseTask from './pages/CreateAlcoholLicenseTask';
 import CreateTobaccoLicenseTask from './pages/CreateTobaccoLicenseTask';
+import SendLicenseEmail from './pages/SendLicenseEmail';
+import TaskWorkflow from './pages/TaskWorkflow';
+import CreateProcessTask from './pages/CreateProcessTask';
+import EditProcessTask from './pages/EditProcessTask';
 import MainLayout from './components/Layout';
 import { authService } from './services/authService';
 import './App.css';
@@ -66,6 +71,16 @@ function App() {
             }
           />
           <Route
+            path="/tasks/:id"
+            element={
+              <ProtectedRoute>
+                <MainLayout>
+                  <EditProcessTask />
+                </MainLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/tasks/create-alcohol"
             element={
               <ProtectedRoute>
@@ -86,14 +101,31 @@ function App() {
             }
           />
           <Route
+            path="/tasks/create-process"
+            element={
+              <ProtectedRoute>
+                <MainLayout>
+                  <CreateProcessTask />
+                </MainLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/tasks/send-email"
+            element={
+              <ProtectedRoute>
+                <MainLayout>
+                  <SendLicenseEmail />
+                </MainLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/documents"
             element={
               <ProtectedRoute>
                 <MainLayout>
-                  <div>
-                    <h1>Документы</h1>
-                    <p>Модуль в разработке</p>
-                  </div>
+                  <Documents />
                 </MainLayout>
               </ProtectedRoute>
             }

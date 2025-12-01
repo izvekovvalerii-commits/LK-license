@@ -58,4 +58,24 @@ public class TaskController {
     public ResponseEntity<List<TaskResponse>> getUpcomingDeadlines(@RequestParam(defaultValue = "7") int days) {
         return ResponseEntity.ok(taskService.getUpcomingDeadlines(days));
     }
+
+    @GetMapping("/{id}/subtasks")
+    public ResponseEntity<List<TaskResponse>> getSubtasks(@PathVariable Long id) {
+        return ResponseEntity.ok(taskService.getSubtasks(id));
+    }
+
+    @PostMapping("/{id}/subtasks")
+    public ResponseEntity<TaskResponse> createSubtask(@PathVariable Long id,
+            @RequestBody TaskRequest request,
+            Authentication authentication) {
+        String username = authentication.getName();
+        return ResponseEntity.ok(taskService.createSubtask(id, request, username));
+    }
+
+    @PutMapping("/{id}/planned-dates")
+    public ResponseEntity<TaskResponse> updatePlannedDates(@PathVariable Long id,
+            @RequestParam String plannedStartDate,
+            @RequestParam String plannedEndDate) {
+        return ResponseEntity.ok(taskService.updatePlannedDates(id, plannedStartDate, plannedEndDate));
+    }
 }

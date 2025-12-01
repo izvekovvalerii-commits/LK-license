@@ -12,7 +12,6 @@ import {
     UserOutlined,
     LogoutOutlined,
     SettingOutlined,
-    ShopOutlined,
     SafetyCertificateOutlined,
 } from '@ant-design/icons';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
@@ -80,15 +79,14 @@ const MainLayout: React.FC<LayoutProps> = ({ children }) => {
             label: <Link to="/payments">Платежи</Link>,
         },
         {
-            key: '/stores',
-            icon: <ShopOutlined />,
-            label: <Link to="/stores">Магазины</Link>,
-        },
-        {
             key: '/references',
             icon: <BookOutlined />,
             label: 'Справочники',
             children: [
+                {
+                    key: '/stores',
+                    label: <Link to="/stores">Магазины</Link>,
+                },
                 {
                     key: '/references/alcohol',
                     label: <Link to="/references/alcohol">Алкогольные лицензии</Link>,

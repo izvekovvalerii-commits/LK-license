@@ -82,6 +82,38 @@ public class Task {
     @Column(columnDefinition = "TEXT")
     private String statusReason;
 
+    // Workflow fields
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parent_task_id")
+    private Task parentTask;
+
+    @OneToMany(mappedBy = "parentTask", cascade = CascadeType.ALL)
+    private List<Task> subtasks;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "subtask_type", length = 30)
+    private SubtaskType subtaskType;
+
+    @Column(name = "planned_start_date")
+    private LocalDate plannedStartDate;
+
+    @Column(name = "planned_end_date")
+    private LocalDate plannedEndDate;
+
+    @Column(name = "actual_start_date")
+    private LocalDate actualStartDate;
+
+    @Column(name = "actual_end_date")
+    private LocalDate actualEndDate;
+
+    public enum SubtaskType {
+        GIS_ANALYSIS, // Анализ локации в ГИС
+        DOCUMENT_UPLOAD, // Загрузка документов
+        STATE_FEE_PAYMENT, // Оплата государственной пошлины
+        EGRN_REQUEST, // Запрос выписки ЕГРН
+        FIAS_ADDRESS_CHECK // Проверка адреса ФИАС
+    }
+
     public enum TaskStatus {
         ASSIGNED, IN_PROGRESS, SUSPENDED, DONE
     }
@@ -211,4 +243,59 @@ public class Task {
         this.payments = payments;
     }
 
+    public Task getParentTask() {
+        return parentTask;
+    }
+
+    public void setParentTask(Task parentTask) {
+        this.parentTask = parentTask;
+    }
+
+    public List<Task> getSubtasks() {
+        return subtasks;
+    }
+
+    public void setSubtasks(List<Task> subtasks) {
+        this.subtasks = subtasks;
+    }
+
+    public SubtaskType getSubtaskType() {
+        return subtaskType;
+    }
+
+    public void setSubtaskType(SubtaskType subtaskType) {
+        this.subtaskType = subtaskType;
+    }
+
+    public LocalDate getPlannedStartDate() {
+        return plannedStartDate;
+    }
+
+    public void setPlannedStartDate(LocalDate plannedStartDate) {
+        this.plannedStartDate = plannedStartDate;
+    }
+
+    public LocalDate getPlannedEndDate() {
+        return plannedEndDate;
+    }
+
+    public void setPlannedEndDate(LocalDate plannedEndDate) {
+        this.plannedEndDate = plannedEndDate;
+    }
+
+    public LocalDate getActualStartDate() {
+        return actualStartDate;
+    }
+
+    public void setActualStartDate(LocalDate actualStartDate) {
+        this.actualStartDate = actualStartDate;
+    }
+
+    public LocalDate getActualEndDate() {
+        return actualEndDate;
+    }
+
+    public void setActualEndDate(LocalDate actualEndDate) {
+        this.actualEndDate = actualEndDate;
+    }
 }

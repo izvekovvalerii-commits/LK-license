@@ -46,6 +46,16 @@ export const TaskStatus = {
 
 export type TaskStatus = typeof TaskStatus[keyof typeof TaskStatus];
 
+export const SubtaskType = {
+    GIS_ANALYSIS: 'GIS_ANALYSIS',
+    DOCUMENT_UPLOAD: 'DOCUMENT_UPLOAD',
+    STATE_FEE_PAYMENT: 'STATE_FEE_PAYMENT',
+    EGRN_REQUEST: 'EGRN_REQUEST',
+    FIAS_ADDRESS_CHECK: 'FIAS_ADDRESS_CHECK',
+} as const;
+
+export type SubtaskType = typeof SubtaskType[keyof typeof SubtaskType];
+
 export interface Task {
     id: number;
     title: string;
@@ -65,6 +75,13 @@ export interface Task {
     updatedAt?: string;
     documentCount: number;
     paymentCount: number;
+    parentTaskId?: number;
+    subtaskType?: SubtaskType;
+    plannedStartDate?: string;
+    plannedEndDate?: string;
+    actualStartDate?: string;
+    actualEndDate?: string;
+    subtasks?: Task[];
 }
 
 export interface TaskRequest {
@@ -77,6 +94,9 @@ export interface TaskRequest {
     deadlineDate?: string;
     status?: TaskStatus;
     statusReason?: string;
+    subtaskType?: SubtaskType;
+    plannedStartDate?: string;
+    plannedEndDate?: string;
 }
 
 export interface Store {

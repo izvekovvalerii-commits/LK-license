@@ -73,6 +73,7 @@ public class TaskRequest {
 
     private Task.TaskStatus status;
     private String statusReason;
+    private Task.SubtaskType subtaskType;
 
     public Task.TaskStatus getStatus() {
         return status;
@@ -88,5 +89,32 @@ public class TaskRequest {
 
     public void setStatusReason(String statusReason) {
         this.statusReason = statusReason;
+    }
+
+    public Task.SubtaskType getSubtaskType() {
+        return subtaskType;
+    }
+
+    public void setSubtaskType(Task.SubtaskType subtaskType) {
+        this.subtaskType = subtaskType;
+    }
+
+    private LocalDate plannedStartDate;
+    private LocalDate plannedEndDate;
+
+    public LocalDate getPlannedStartDate() {
+        return plannedStartDate;
+    }
+
+    public void setPlannedStartDate(LocalDate plannedStartDate) {
+        this.plannedStartDate = plannedStartDate;
+    }
+
+    public LocalDate getPlannedEndDate() {
+        return plannedEndDate;
+    }
+
+    public void setPlannedEndDate(LocalDate plannedEndDate) {
+        this.plannedEndDate = plannedEndDate;
     }
 }

@@ -21,6 +21,18 @@ spring:
     serialization:
       write-dates-as-timestamps: false
     time-zone: UTC
+  
+  mail:
+    host: smtp.office365.com
+    port: 587
+    username: YOUR_EMAIL_HERE
+    password: YOUR_PASSWORD_HERE
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 
 server:
   port: 8081

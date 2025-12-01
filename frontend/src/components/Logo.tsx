@@ -1,23 +1,35 @@
 import React from 'react';
 import { Space } from 'antd';
+import { useNavigate } from 'react-router-dom';
 
 interface LogoProps {
     collapsed: boolean;
 }
 
 const Logo: React.FC<LogoProps> = ({ collapsed }) => {
+    const navigate = useNavigate();
+
+    const handleLogoClick = () => {
+        navigate('/');
+    };
+
     return (
-        <div className="logo-container" style={{
-            height: '64px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: collapsed ? '0' : '0 16px',
-            background: 'rgba(255, 255, 255, 0.05)',
-            transition: 'all 0.2s',
-            overflow: 'hidden',
-            whiteSpace: 'nowrap'
-        }}>
+        <div
+            className="logo-container"
+            onClick={handleLogoClick}
+            style={{
+                height: '64px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: collapsed ? '0' : '0 16px',
+                background: 'rgba(255, 255, 255, 0.05)',
+                transition: 'all 0.2s',
+                overflow: 'hidden',
+                whiteSpace: 'nowrap',
+                cursor: 'pointer'
+            }}
+        >
             <Space size={12} align="center" style={{ justifyContent: 'center', width: '100%' }}>
                 {/* SVG Icon - Shield with Checkmark */}
                 <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -33,15 +45,7 @@ const Logo: React.FC<LogoProps> = ({ collapsed }) => {
                             fontSize: '16px',
                             letterSpacing: '0.5px'
                         }}>
-                            LICENSE
-                        </span>
-                        <span style={{
-                            color: 'rgba(255,255,255,0.65)',
-                            fontSize: '11px',
-                            fontWeight: 500,
-                            textTransform: 'uppercase'
-                        }}>
-                            PORTAL
+                            X5_LICENSE
                         </span>
                     </div>
                 )}

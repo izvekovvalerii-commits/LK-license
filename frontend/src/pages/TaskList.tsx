@@ -274,6 +274,10 @@ const TaskList: React.FC = () => {
                     dataSource={filteredTasks}
                     rowKey="id"
                     loading={loading}
+                    onRow={(record) => ({
+                        onClick: () => navigate(`/tasks/${record.id}`),
+                        style: { cursor: 'pointer' },
+                    })}
                     pagination={{
                         pageSize: 10,
                         showSizeChanger: true,

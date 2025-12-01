@@ -31,4 +31,7 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
             Task.LicenseType licenseType,
             Task.ActionType actionType,
             Collection<Task.TaskStatus> statuses);
+
+    // Find subtasks by parent task ID
+    List<Task> findByParentTaskId(Long parentTaskId);
 }

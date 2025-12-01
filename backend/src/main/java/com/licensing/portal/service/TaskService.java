@@ -155,6 +155,66 @@ public class TaskService {
                 .collect(Collectors.toList());
     }
 
+    public List<TaskResponse> getSubtasks(Long parentTaskId) {
+        Task parentTask = taskRepository.findById(parentTaskId)
+                .orElseThrow(() -> new RuntimeException("Parent task not found"));
+
+        return taskRepository.findByParentTaskId(parentTaskId).stream()
+                .map(this::convertToResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public TaskResponse createSubtask(Long parentTaskId, TaskRequest request, String username) {
+        Task parentTask = taskRepository.findById(parentTaskId)
+                .orElseThrow(() -> new RuntimeException("Parent task not found"));
+
+        User creator = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        Task subtask = new Task();
+        subtask.setTitle(request.getTitle());
+        subtask.setDescription(request.getDescription());
+        subtask.setLicenseType(parentTask.getLicenseType());
+        subtask.setActionType(parentTask.getActionType());
+        subtask.setCreatedBy(creator);
+        subtask.setParentTask(parentTask);
+        subtask.setSubtaskType(request.getSubtaskType());
+        subtask.setStatus(Task.TaskStatus.ASSIGNED);
+
+        // Inherit store and assignee from parent if not specified
+        if (request.getStoreId() != null) {
+            Store store = storeRepository.findById(request.getStoreId())
+                    .orElseThrow(() -> new RuntimeException("Store not found"));
+            subtask.setStore(store);
+        } else if (parentTask.getStore() != null) {
+            subtask.setStore(parentTask.getStore());
+        }
+
+        if (request.getAssigneeId() != null) {
+            User assignee = userRepository.findById(request.getAssigneeId())
+                    .orElseThrow(() -> new RuntimeException("Assignee not found"));
+            subtask.setAssignee(assignee);
+        } else if (parentTask.getAssignee() != null) {
+            subtask.setAssignee(parentTask.getAssignee());
+        }
+
+        Task savedSubtask = taskRepository.save(subtask);
+        return convertToResponse(savedSubtask);
+    }
+
+    @Transactional
+    public TaskResponse updatePlannedDates(Long id, String plannedStartDate, String plannedEndDate) {
+        Task task = taskRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Task not found"));
+
+        task.setPlannedStartDate(LocalDate.parse(plannedStartDate));
+        task.setPlannedEndDate(LocalDate.parse(plannedEndDate));
+
+        Task updatedTask = taskRepository.save(task);
+        return convertToResponse(updatedTask);
+    }
+
     private TaskResponse convertToResponse(Task task) {
         TaskResponse response = new TaskResponse();
         response.setId(task.getId());
