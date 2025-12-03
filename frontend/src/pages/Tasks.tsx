@@ -112,6 +112,7 @@ const Tasks: React.FC = () => {
             title: 'Название',
             dataIndex: 'title',
             key: 'title',
+            sorter: (a: Task, b: Task) => (a.title || '').localeCompare(b.title || ''),
             render: (text: string, record: Task) => (
                 <a onClick={() => navigate(`/tasks/${record.id}`)}>{text}</a>
             ),
@@ -120,6 +121,7 @@ const Tasks: React.FC = () => {
             title: 'Тип лицензии',
             dataIndex: 'licenseType',
             key: 'licenseType',
+            sorter: (a: Task, b: Task) => (a.licenseType || '').localeCompare(b.licenseType || ''),
             render: (type: string) => (
                 type === 'ALCOHOL' ? (
                     <Space>
@@ -138,6 +140,7 @@ const Tasks: React.FC = () => {
             title: 'Действие',
             dataIndex: 'actionType',
             key: 'actionType',
+            sorter: (a: Task, b: Task) => (a.actionType || '').localeCompare(b.actionType || ''),
             render: (type: string) => (
                 type === 'NEW' ? 'Новая' : 'Продление'
             ),
@@ -146,25 +149,44 @@ const Tasks: React.FC = () => {
             title: 'Магазин',
             dataIndex: 'storeName',
             key: 'storeName',
+            sorter: (a: Task, b: Task) => (a.storeName || '').localeCompare(b.storeName || ''),
             render: (name: string) => name || '-',
         },
         {
             title: 'Ответственный',
             dataIndex: 'assigneeName',
             key: 'assigneeName',
+            sorter: (a: Task, b: Task) => (a.assigneeName || '').localeCompare(b.assigneeName || ''),
             render: (name: string) => name || '-',
         },
         {
             title: 'Статус',
             dataIndex: 'status',
             key: 'status',
+            sorter: (a: Task, b: Task) => (a.status || '').localeCompare(b.status || ''),
             render: (status: string) => getStatusTag(status),
+        },
+        {
+            title: 'Дата создания',
+            dataIndex: 'createdAt',
+            key: 'createdAt',
+            sorter: (a: Task, b: Task) => {
+                const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+                const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+                return dateA - dateB;
+            },
+            render: (date: string) => date ? dayjs(date).format('DD.MM.YYYY HH:mm') : '-',
         },
         {
             title: 'Срок',
             dataIndex: 'deadlineDate',
             key: 'deadlineDate',
-            render: (date: string) => date ? new Date(date).toLocaleDateString('ru-RU') : '-',
+            sorter: (a: Task, b: Task) => {
+                const dateA = a.deadlineDate ? new Date(a.deadlineDate).getTime() : 0;
+                const dateB = b.deadlineDate ? new Date(b.deadlineDate).getTime() : 0;
+                return dateA - dateB;
+            },
+            render: (date: string) => date ? dayjs(date).format('DD.MM.YYYY') : '-',
         },
     ];
 
@@ -180,19 +202,19 @@ const Tasks: React.FC = () => {
                             cursor: 'pointer',
                             textAlign: 'center',
                             background: showTaskActions ? '#f0f5ff' : '#fff',
-                            borderRadius: '16px',
-                            boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
-                            border: showTaskActions ? '2px solid #1890ff' : '1px solid #f0f0f0',
+                            borderRadius: '8px',
+                            boxShadow: '0 2px 6px rgba(0,0,0,0.05)',
+                            border: showTaskActions ? '1px solid #1890ff' : '1px solid #f0f0f0',
                             transition: 'all 0.3s ease',
-                            padding: '20px'
+                            padding: '10px'
                         }}
                     >
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px' }}>
-                            <PlusOutlined style={{ fontSize: '24px', color: '#1890ff' }} />
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+                            <PlusOutlined style={{ fontSize: '12px', color: '#1890ff' }} />
                             <span style={{ fontSize: '18px', fontWeight: 600, color: '#262626' }}>Новая задача</span>
                             {showTaskActions ?
-                                <UpOutlined style={{ fontSize: '16px', color: '#1890ff' }} /> :
-                                <DownOutlined style={{ fontSize: '16px', color: '#8c8c8c' }} />
+                                <UpOutlined style={{ fontSize: '8px', color: '#1890ff' }} /> :
+                                <DownOutlined style={{ fontSize: '8px', color: '#8c8c8c' }} />
                             }
                         </div>
                     </Card>

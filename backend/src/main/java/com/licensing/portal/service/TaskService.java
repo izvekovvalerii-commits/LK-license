@@ -99,6 +99,15 @@ public class TaskService {
         task.setDescription(request.getDescription());
         task.setDeadlineDate(request.getDeadlineDate());
 
+        // Update license type and action type if provided
+        if (request.getLicenseType() != null) {
+            task.setLicenseType(request.getLicenseType());
+        }
+
+        if (request.getActionType() != null) {
+            task.setActionType(request.getActionType());
+        }
+
         if (request.getStatus() != null) {
             task.setStatus(request.getStatus());
         }
@@ -117,6 +126,20 @@ public class TaskService {
             User assignee = userRepository.findById(request.getAssigneeId())
                     .orElseThrow(() -> new RuntimeException("Assignee not found"));
             task.setAssignee(assignee);
+        }
+
+        // Update planned dates if provided
+        if (request.getPlannedStartDate() != null) {
+            task.setPlannedStartDate(request.getPlannedStartDate());
+        }
+
+        if (request.getPlannedEndDate() != null) {
+            task.setPlannedEndDate(request.getPlannedEndDate());
+        }
+
+        // Update subtask type if provided (for subtasks)
+        if (request.getSubtaskType() != null) {
+            task.setSubtaskType(request.getSubtaskType());
         }
 
         Task updatedTask = taskRepository.save(task);

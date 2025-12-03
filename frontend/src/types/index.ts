@@ -121,3 +121,31 @@ export interface Store {
     tobaccoLicenseExpiry: string | null;
     isActive: boolean;
 }
+
+export const PaymentStatus = {
+    PENDING: 'PENDING',
+    PAID: 'PAID',
+    FAILED: 'FAILED',
+} as const;
+
+export type PaymentStatus = typeof PaymentStatus[keyof typeof PaymentStatus];
+
+export const PaymentType = {
+    STATE_FEE: 'STATE_FEE',
+    FINE: 'FINE',
+    OTHER: 'OTHER',
+} as const;
+
+export type PaymentType = typeof PaymentType[keyof typeof PaymentType];
+
+export interface Payment {
+    id: number;
+    taskId: number;
+    amount: number;
+    status: PaymentStatus;
+    type: PaymentType;
+    paymentDate?: string;
+    notes?: string;
+    createdAt: string;
+    updatedAt?: string;
+}
