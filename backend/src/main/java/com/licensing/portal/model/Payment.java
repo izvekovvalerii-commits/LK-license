@@ -20,10 +20,6 @@ public class Payment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "task_id", nullable = false)
-    private Task task;
-
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal amount;
 
@@ -40,6 +36,35 @@ public class Payment {
     @Column(columnDefinition = "TEXT")
     private String notes;
 
+    @Enumerated(EnumType.STRING)
+    @Column(length = 20)
+    private PaymentType type;
+
+    @Column(name = "task_id")
+    private Long taskId;
+
+    @Column(length = 100)
+    private String region;
+
+    @Column(name = "retail_network", length = 100)
+    private String retailNetwork;
+
+    @Column(name = "legal_entity", length = 100)
+    private String legalEntity;
+
+    @Column(name = "payment_recipient", length = 100)
+    private String paymentRecipient;
+
+    @Column(length = 20)
+    private String oktmo;
+
+    @Column(name = "bank_mark_required")
+    private Boolean bankMarkRequired = false;
+
+    @ManyToMany
+    @JoinTable(name = "payment_stores", joinColumns = @JoinColumn(name = "payment_id"), inverseJoinColumns = @JoinColumn(name = "store_id"))
+    private java.util.List<Store> stores;
+
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
@@ -48,20 +73,16 @@ public class Payment {
         PENDING, COMPLETED, FAILED, CANCELLED
     }
 
+    public enum PaymentType {
+        STATE_FEE, FINE, OTHER
+    }
+
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public Task getTask() {
-        return task;
-    }
-
-    public void setTask(Task task) {
-        this.task = task;
     }
 
     public BigDecimal getAmount() {
@@ -112,4 +133,75 @@ public class Payment {
         this.createdAt = createdAt;
     }
 
+    public PaymentType getType() {
+        return type;
+    }
+
+    public void setType(PaymentType type) {
+        this.type = type;
+    }
+
+    public Long getTaskId() {
+        return taskId;
+    }
+
+    public void setTaskId(Long taskId) {
+        this.taskId = taskId;
+    }
+
+    public String getRegion() {
+        return region;
+    }
+
+    public void setRegion(String region) {
+        this.region = region;
+    }
+
+    public String getRetailNetwork() {
+        return retailNetwork;
+    }
+
+    public void setRetailNetwork(String retailNetwork) {
+        this.retailNetwork = retailNetwork;
+    }
+
+    public String getLegalEntity() {
+        return legalEntity;
+    }
+
+    public void setLegalEntity(String legalEntity) {
+        this.legalEntity = legalEntity;
+    }
+
+    public String getPaymentRecipient() {
+        return paymentRecipient;
+    }
+
+    public void setPaymentRecipient(String paymentRecipient) {
+        this.paymentRecipient = paymentRecipient;
+    }
+
+    public java.util.List<Store> getStores() {
+        return stores;
+    }
+
+    public void setStores(java.util.List<Store> stores) {
+        this.stores = stores;
+    }
+
+    public String getOktmo() {
+        return oktmo;
+    }
+
+    public void setOktmo(String oktmo) {
+        this.oktmo = oktmo;
+    }
+
+    public Boolean getBankMarkRequired() {
+        return bankMarkRequired;
+    }
+
+    public void setBankMarkRequired(Boolean bankMarkRequired) {
+        this.bankMarkRequired = bankMarkRequired;
+    }
 }

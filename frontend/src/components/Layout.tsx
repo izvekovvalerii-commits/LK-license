@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Layout as AntLayout, Menu, Dropdown, Space, Avatar, Badge } from 'antd';
+import { Layout as AntLayout, Menu, Space, Avatar, Badge } from 'antd';
 import Logo from './Logo';
 import {
     DashboardOutlined,
@@ -10,12 +10,9 @@ import {
     BookOutlined,
     BellOutlined,
     UserOutlined,
-    LogoutOutlined,
-    SettingOutlined,
     SafetyCertificateOutlined,
 } from '@ant-design/icons';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { authService } from '../services/authService';
+import { Link, useLocation } from 'react-router-dom';
 import './Layout.css';
 
 const { Header, Sider, Content } = AntLayout;
@@ -26,36 +23,7 @@ interface LayoutProps {
 
 const MainLayout: React.FC<LayoutProps> = ({ children }) => {
     const [collapsed, setCollapsed] = useState(false);
-    const navigate = useNavigate();
     const location = useLocation();
-    const user = authService.getStoredUser();
-
-    const handleLogout = () => {
-        authService.logout();
-        navigate('/login');
-    };
-
-    const userMenuItems = [
-        {
-            key: 'profile',
-            icon: <UserOutlined />,
-            label: 'Профиль',
-        },
-        {
-            key: 'settings',
-            icon: <SettingOutlined />,
-            label: 'Настройки',
-        },
-        {
-            type: 'divider' as const,
-        },
-        {
-            key: 'logout',
-            icon: <LogoutOutlined />,
-            label: 'Выход',
-            onClick: handleLogout,
-        },
-    ];
 
     const menuItems = [
         {
@@ -86,6 +54,10 @@ const MainLayout: React.FC<LayoutProps> = ({ children }) => {
                 {
                     key: '/stores',
                     label: <Link to="/stores">Магазины</Link>,
+                },
+                {
+                    key: '/regions',
+                    label: <Link to="/regions">Регионы РФ</Link>,
                 },
                 {
                     key: '/references/alcohol',
@@ -125,12 +97,10 @@ const MainLayout: React.FC<LayoutProps> = ({ children }) => {
                             <Badge count={0} showZero>
                                 <BellOutlined style={{ fontSize: '20px', cursor: 'pointer' }} />
                             </Badge>
-                            <Dropdown menu={{ items: userMenuItems }} trigger={['click']}>
-                                <Space style={{ cursor: 'pointer' }}>
-                                    <Avatar icon={<UserOutlined />} />
-                                    <span>{user?.fullName || user?.username}</span>
-                                </Space>
-                            </Dropdown>
+                            <Space style={{ cursor: 'pointer' }}>
+                                <Avatar icon={<UserOutlined />} />
+                                <span>Администратор</span>
+                            </Space>
                         </Space>
                     </div>
                 </Header>

@@ -19,10 +19,6 @@ public class Document {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "task_id", nullable = false)
-    private Task task;
-
     @Column(nullable = false, length = 100)
     private String documentType;
 
@@ -57,14 +53,6 @@ public class Document {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public Task getTask() {
-        return task;
-    }
-
-    public void setTask(Task task) {
-        this.task = task;
     }
 
     public String getDocumentType() {

@@ -1,25 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Card, Row, Col, Table, Tag, Skeleton } from 'antd';
-import {
-    FileTextOutlined,
-    CheckCircleOutlined,
-    ClockCircleOutlined,
-    PauseCircleOutlined,
-    PlayCircleOutlined,
-    ShopOutlined,
-} from '@ant-design/icons';
+import { Card, Row, Col, Tag } from 'antd';
+import { ShopOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
-import { taskService } from '../services/taskService';
 import { storeService } from '../services/storeService';
-import type { Task } from '../types';
-import { TaskStatus } from '../types';
-import dayjs from 'dayjs';
 import './Dashboard.css';
 
 const Dashboard: React.FC = () => {
-    const [tasks, setTasks] = useState<Task[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [upcomingDeadlines, setUpcomingDeadlines] = useState<Task[]>([]);
     const [licenseStats, setLicenseStats] = useState({
         totalStores: 0,
         activeAlcohol: 0,
@@ -34,189 +20,20 @@ const Dashboard: React.FC = () => {
     }, []);
 
     const loadDashboardData = async () => {
-        setLoading(true);
         try {
-            const [
-                allTasks,
-                deadlines,
-                licenses,
-            ] = await Promise.all([
-                taskService.getAllTasks(),
-                taskService.getUpcomingDeadlines(14),
-                storeService.getLicenseStats(),
-            ]);
-
-            setTasks(allTasks);
-            setUpcomingDeadlines(deadlines);
+            const licenses = await storeService.getLicenseStats();
             setLicenseStats(licenses);
         } catch (error) {
             console.error('Error fetching dashboard data:', error);
-        } finally {
-            setLoading(false);
         }
     };
 
-    // Statistics
-    const totalTasks = tasks.length;
-    const assignedTasks = tasks.filter(t => t.status === TaskStatus.ASSIGNED).length;
-    const completedTasks = tasks.filter(t => t.status === TaskStatus.DONE).length;
-    const inProgressTasks = tasks.filter(t => t.status === TaskStatus.IN_PROGRESS).length;
-    const suspendedTasks = tasks.filter(t => t.status === TaskStatus.SUSPENDED).length;
-
-
-
-    const statusColors: Record<TaskStatus, string> = {
-        [TaskStatus.ASSIGNED]: 'blue',
-        [TaskStatus.IN_PROGRESS]: 'processing',
-        [TaskStatus.SUSPENDED]: 'warning',
-        [TaskStatus.DONE]: 'success',
-    };
-
-    const statusLabels: Record<TaskStatus, string> = {
-        [TaskStatus.ASSIGNED]: 'Назначена',
-        [TaskStatus.IN_PROGRESS]: 'В работе',
-        [TaskStatus.SUSPENDED]: 'Приостановлена',
-        [TaskStatus.DONE]: 'Готово',
-    };
-
-    const columns = [
-        {
-            title: 'Название',
-            dataIndex: 'title',
-            key: 'title',
-        },
-        {
-            title: 'Магазин',
-            dataIndex: 'storeName',
-            key: 'storeName',
-        },
-        {
-            title: 'Тип лицензии',
-            dataIndex: 'licenseType',
-            key: 'licenseType',
-            render: (type: string) => type === 'ALCOHOL' ? 'Алкогольная' : 'Табачная',
-        },
-        {
-            title: 'Срок',
-            dataIndex: 'deadlineDate',
-            key: 'deadlineDate',
-            render: (date: string) => date ? dayjs(date).format('DD.MM.YYYY') : '-',
-        },
-        {
-            title: 'Осталось дней',
-            dataIndex: 'deadlineDate',
-            key: 'daysLeft',
-            render: (date: string) => {
-                if (!date) return '-';
-                const days = dayjs(date).diff(dayjs(), 'days');
-                const color = days < 3 ? 'red' : days < 7 ? 'orange' : 'green';
-                return <Tag color={color}>{days} дн.</Tag>;
-            },
-        },
-        {
-            title: 'Статус',
-            dataIndex: 'status',
-            key: 'status',
-            render: (status: TaskStatus) => (
-                <Tag color={statusColors[status]}>{statusLabels[status]}</Tag>
-            ),
-        },
-    ];
-
-    if (loading) {
-        return (
-            <div className="dashboard">
-                <Skeleton active paragraph={{ rows: 8 }} />
-            </div>
-        );
-    }
-
     return (
         <div className="dashboard">
-            {/* Stats Cards */}
-            <Row gutter={[16, 16]} className="stats-row">
-                <Col xs={12} sm={8} md={4}>
-                    <Card
-                        className="stat-card stat-card-total"
-                        hoverable
-                        onClick={() => navigate('/tasks')}
-                    >
-                        <div className="stat-content">
-                            <FileTextOutlined className="stat-icon" />
-                            <div className="stat-value">{totalTasks}</div>
-                            <div className="stat-label">Всего задач</div>
-                        </div>
-                    </Card>
-                </Col>
-                <Col xs={12} sm={8} md={4}>
-                    <Card
-                        className="stat-card stat-card-assigned"
-                        hoverable
-                        onClick={() => navigate('/tasks', { state: { filter: 'assigned' } })}
-                    >
-                        <div className="stat-content">
-                            <ClockCircleOutlined className="stat-icon" />
-                            <div className="stat-value">{assignedTasks}</div>
-                            <div className="stat-label">Назначены</div>
-                        </div>
-                    </Card>
-                </Col>
-                <Col xs={12} sm={8} md={4}>
-                    <Card
-                        className="stat-card stat-card-progress"
-                        hoverable
-                        onClick={() => navigate('/tasks', { state: { filter: 'in_progress' } })}
-                    >
-                        <div className="stat-content">
-                            <PlayCircleOutlined className="stat-icon" />
-                            <div className="stat-value">{inProgressTasks}</div>
-                            <div className="stat-label">В работе</div>
-                        </div>
-                    </Card>
-                </Col>
-                <Col xs={12} sm={8} md={4}>
-                    <Card
-                        className="stat-card stat-card-suspended"
-                        hoverable
-                        onClick={() => navigate('/tasks', { state: { filter: 'suspended' } })}
-                    >
-                        <div className="stat-content">
-                            <PauseCircleOutlined className="stat-icon" />
-                            <div className="stat-value">{suspendedTasks}</div>
-                            <div className="stat-label">Приостановлены</div>
-                        </div>
-                    </Card>
-                </Col>
-                <Col xs={12} sm={8} md={4}>
-                    <Card
-                        className="stat-card stat-card-deadlines"
-                        hoverable
-                        onClick={() => navigate('/tasks', { state: { filter: 'upcoming' } })}
-                    >
-                        <div className="stat-content">
-                            <ClockCircleOutlined className="stat-icon" />
-                            <div className="stat-value">{upcomingDeadlines.length}</div>
-                            <div className="stat-label">Приближающиеся сроки</div>
-                        </div>
-                    </Card>
-                </Col>
-                <Col xs={12} sm={8} md={4}>
-                    <Card
-                        className="stat-card stat-card-completed"
-                        hoverable
-                        onClick={() => navigate('/tasks', { state: { filter: 'completed' } })}
-                    >
-                        <div className="stat-content">
-                            <CheckCircleOutlined className="stat-icon" />
-                            <div className="stat-value">{completedTasks}</div>
-                            <div className="stat-label">Завершено</div>
-                        </div>
-                    </Card>
-                </Col>
-            </Row>
+            <h1 style={{ marginBottom: 24 }}>Панель управления</h1>
 
             {/* License Stats */}
-            <Row gutter={[16, 16]} justify="center" style={{ marginTop: 24 }}>
+            <Row gutter={[16, 16]} justify="center">
                 <Col xs={24} sm={8} md={6}>
                     <Card
                         hoverable
@@ -343,22 +160,6 @@ const Dashboard: React.FC = () => {
                     </Card>
                 </Col>
             </Row>
-
-            {/* Upcoming Deadlines Table */}
-            <Card title="Задачи с приближающимися сроками" className="upcoming-deadlines-card" style={{ marginTop: 24 }}>
-                <Table
-                    columns={columns}
-                    dataSource={upcomingDeadlines}
-                    rowKey="id"
-                    loading={loading}
-                    onRow={(record) => ({
-                        onClick: () => navigate(`/tasks/${record.id}`),
-                        style: { cursor: 'pointer' },
-                    })}
-                    pagination={{ pageSize: 10 }}
-                    locale={{ emptyText: 'Нет задач с приближающимися сроками' }}
-                />
-            </Card>
         </div >
     );
 };

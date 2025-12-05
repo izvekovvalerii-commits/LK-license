@@ -1,10 +1,51 @@
-import React from 'react';
-import { Card, Table, Row, Col } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Card, Table, Tag, Row, Col, message } from 'antd';
 import { FileTextOutlined, CopyOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
+import { paymentService } from '../services/paymentService';
+import type { Payment } from '../types';
 
 const Payments: React.FC = () => {
     const navigate = useNavigate();
+    const [payments, setPayments] = useState<Payment[]>([]);
+    const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        loadPayments();
+    }, []);
+
+    const loadPayments = async () => {
+        setLoading(true);
+        try {
+            const data = await paymentService.getAllPayments();
+            setPayments(data);
+        } catch (error) {
+            message.error('Ошибка загрузки платежей');
+            console.error(error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const getStatusTag = (status: string) => {
+        const statusConfig: Record<string, { color: string; text: string }> = {
+            PENDING: { color: 'orange', text: 'Ожидание' },
+            COMPLETED: { color: 'green', text: 'Завершен' },
+            FAILED: { color: 'red', text: 'Ошибка' },
+            CANCELLED: { color: 'default', text: 'Отменен' },
+        };
+        const config = statusConfig[status] || { color: 'default', text: status };
+        return <Tag color={config.color}>{config.text}</Tag>;
+    };
+
+    const getTypeText = (type: string) => {
+        const typeMap: Record<string, string> = {
+            STATE_FEE: 'Госпошлина',
+            FINE: 'Штраф',
+            OTHER: 'Другое',
+        };
+        return typeMap[type] || type;
+    };
 
     return (
         <div style={{ padding: '24px' }}>
@@ -38,15 +79,51 @@ const Payments: React.FC = () => {
 
             <Card title="История платежей">
                 <Table
-                    dataSource={[]}
+                    dataSource={payments}
+                    rowKey="id"
+                    loading={loading}
                     columns={[
-                        { title: 'Номер', dataIndex: 'id', key: 'id' },
-                        { title: 'Дата', dataIndex: 'date', key: 'date' },
-                        { title: 'Тип', dataIndex: 'type', key: 'type' },
-                        { title: 'Сумма', dataIndex: 'amount', key: 'amount' },
-                        { title: 'Статус', dataIndex: 'status', key: 'status' },
+                        {
+                            title: 'Номер',
+                            dataIndex: 'id',
+                            key: 'id',
+                            width: 100,
+                        },
+                        {
+                            title: 'Дата',
+                            dataIndex: 'createdAt',
+                            key: 'createdAt',
+                            render: (date: string) => new Date(date).toLocaleString('ru-RU'),
+                        },
+                        {
+                            title: 'Тип',
+                            dataIndex: 'type',
+                            key: 'type',
+                            render: (type: string) => getTypeText(type),
+                        },
+                        {
+                            title: 'Сумма',
+                            dataIndex: 'amount',
+                            key: 'amount',
+                            render: (amount: number) => `${amount.toFixed(2)} ₽`,
+                        },
+                        {
+                            title: 'Регион',
+                            dataIndex: 'region',
+                            key: 'region',
+                        },
+                        {
+                            title: 'Статус',
+                            dataIndex: 'status',
+                            key: 'status',
+                            render: (status: string) => getStatusTag(status),
+                        },
                     ]}
                     locale={{ emptyText: 'Нет платежей' }}
+                    pagination={{
+                        pageSize: 10,
+                        showTotal: (total) => `Всего платежей: ${total}`,
+                    }}
                 />
             </Card>
         </div>
