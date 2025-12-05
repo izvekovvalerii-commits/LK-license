@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Input, Tag, Space, Card, message } from 'antd';
-import { SearchOutlined, PhoneOutlined, EnvironmentOutlined, SafetyCertificateOutlined } from '@ant-design/icons';
+import { Table, Input, Tag, Space, Card, message, Button } from 'antd';
+import { SearchOutlined, PhoneOutlined, EnvironmentOutlined, SafetyCertificateOutlined, LinkOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 import { storeService } from '../services/storeService';
 import type { Store } from '../types';
@@ -124,14 +124,23 @@ const AlcoholLicenses: React.FC = () => {
                     <h1>
                         <SafetyCertificateOutlined /> Алкогольные лицензии
                     </h1>
-                    <Input
-                        placeholder="Поиск по названию или адресу"
-                        prefix={<SearchOutlined />}
-                        value={searchText}
-                        onChange={(e) => setSearchText(e.target.value)}
-                        style={{ width: 350 }}
-                        allowClear
-                    />
+                    <Space>
+                        <Button
+                            type="primary"
+                            icon={<LinkOutlined />}
+                            onClick={() => window.open('https://fsrar.gov.ru/licens/reestr', '_blank')}
+                        >
+                            Запросить информацию
+                        </Button>
+                        <Input
+                            placeholder="Поиск по названию или адресу"
+                            prefix={<SearchOutlined />}
+                            value={searchText}
+                            onChange={(e) => setSearchText(e.target.value)}
+                            style={{ width: 350 }}
+                            allowClear
+                        />
+                    </Space>
                 </div>
 
                 <Table

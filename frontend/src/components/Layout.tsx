@@ -1,21 +1,23 @@
-
 import React, { useState } from 'react';
-import { Layout as AntLayout, Menu, Space, Avatar, Badge } from 'antd';
+import { Layout as AntLayout, Menu, Avatar, Badge, Switch } from 'antd';
 import Logo from './Logo';
 import {
     DashboardOutlined,
     FileTextOutlined,
-    FolderOutlined,
     DollarOutlined,
     BookOutlined,
     BellOutlined,
     UserOutlined,
-    SafetyCertificateOutlined,
+    EnvironmentOutlined,
+    HomeOutlined,
+    BulbOutlined,
+    BulbFilled,
 } from '@ant-design/icons';
 import { Link, useLocation } from 'react-router-dom';
+import { useTheme } from '../context/ThemeContext';
 import './Layout.css';
 
-const { Header, Sider, Content } = AntLayout;
+const { Sider, Content } = AntLayout;
 
 interface LayoutProps {
     children: React.ReactNode;
@@ -24,6 +26,7 @@ interface LayoutProps {
 const MainLayout: React.FC<LayoutProps> = ({ children }) => {
     const [collapsed, setCollapsed] = useState(false);
     const location = useLocation();
+    const { currentTheme, toggleTheme } = useTheme();
 
     const menuItems = [
         {
@@ -36,15 +39,26 @@ const MainLayout: React.FC<LayoutProps> = ({ children }) => {
             icon: <FileTextOutlined />,
             label: <Link to="/tasks">Задачи</Link>,
         },
-        {
-            key: '/documents',
-            icon: <FolderOutlined />,
-            label: <Link to="/documents">Документы</Link>,
-        },
+
         {
             key: '/payments',
             icon: <DollarOutlined />,
             label: <Link to="/payments">Платежи</Link>,
+        },
+        {
+            key: '/documents/egrn-list',
+            icon: <FileTextOutlined />,
+            label: <Link to="/documents/egrn-list">Выписки ЕГРН</Link>,
+        },
+        {
+            key: '/documents/gis',
+            icon: <EnvironmentOutlined />,
+            label: <Link to="/documents/gis">Анализ локации</Link>,
+        },
+        {
+            key: '/documents/lease',
+            icon: <HomeOutlined />,
+            label: <Link to="/documents/lease">Договоры аренды</Link>,
         },
         {
             key: '/references',
@@ -67,43 +81,61 @@ const MainLayout: React.FC<LayoutProps> = ({ children }) => {
                     key: '/references/tobacco',
                     label: <Link to="/references/tobacco">Табачные лицензии</Link>,
                 },
-                {
-                    key: '/references/employees',
-                    label: <Link to="/references/employees">Сотрудники</Link>,
-                },
             ],
         },
     ];
 
     return (
         <AntLayout style={{ minHeight: '100vh' }}>
-            <Sider collapsible collapsed={collapsed} onCollapse={setCollapsed} theme="dark">
-                <Logo collapsed={collapsed} />
-                <Menu
-                    theme="dark"
-                    mode="inline"
-                    selectedKeys={[location.pathname]}
-                    items={menuItems}
-                />
+            <Sider collapsible collapsed={collapsed} onCollapse={setCollapsed} theme="dark" width={260}>
+                <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+                    <Logo collapsed={collapsed} />
+                    <Menu
+                        theme="dark"
+                        mode="inline"
+                        selectedKeys={[location.pathname]}
+                        items={menuItems}
+                        style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden' }}
+                    />
+
+                    {/* User Profile Section */}
+                    <div style={{
+                        padding: '16px',
+                        borderTop: '1px solid rgba(255, 255, 255, 0.1)',
+                        display: 'flex',
+                        flexDirection: collapsed ? 'column' : 'row',
+                        alignItems: 'center',
+                        justifyContent: collapsed ? 'center' : 'space-between',
+                        gap: '12px',
+                        background: '#001529'
+                    }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: collapsed ? '16px' : '12px', flexDirection: collapsed ? 'column' : 'row', width: '100%', justifyContent: collapsed ? 'center' : 'flex-start' }}>
+                            <Switch
+                                checked={currentTheme === 'dark'}
+                                onChange={toggleTheme}
+                                checkedChildren={<BulbFilled />}
+                                unCheckedChildren={<BulbOutlined />}
+                                style={{ backgroundColor: currentTheme === 'dark' ? '#1890ff' : '#bfbfbf' }}
+                            />
+
+                            <Badge count={0} showZero size="small">
+                                <BellOutlined style={{ fontSize: '18px', color: 'rgba(255, 255, 255, 0.65)', cursor: 'pointer' }} />
+                            </Badge>
+
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', overflow: 'hidden' }}>
+                                <Avatar icon={<UserOutlined />} style={{ backgroundColor: '#1890ff', flexShrink: 0 }} />
+                                {!collapsed && (
+                                    <div style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+                                        <span style={{ color: '#fff', fontWeight: 500, fontSize: '14px', lineHeight: '1.2', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Администратор</span>
+                                        <span style={{ color: 'rgba(255, 255, 255, 0.45)', fontSize: '12px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>admin@x5.ru</span>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </Sider>
             <AntLayout>
-                <Header className="site-layout-header">
-                    <div className="header-content">
-                        <div className="header-title">
-                            <SafetyCertificateOutlined style={{ marginRight: 8, fontSize: '20px' }} />
-                            Портал управления лицензиями
-                        </div>
-                        <Space size="large">
-                            <Badge count={0} showZero>
-                                <BellOutlined style={{ fontSize: '20px', cursor: 'pointer' }} />
-                            </Badge>
-                            <Space style={{ cursor: 'pointer' }}>
-                                <Avatar icon={<UserOutlined />} />
-                                <span>Администратор</span>
-                            </Space>
-                        </Space>
-                    </div>
-                </Header>
                 <Content className="site-layout-content">
                     {children}
                 </Content>
