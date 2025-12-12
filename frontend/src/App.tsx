@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { ConfigProvider } from 'antd';
 import ruRU from 'antd/locale/ru_RU';
@@ -19,6 +20,8 @@ import MainLayout from './components/Layout';
 import './App.css';
 
 function App() {
+  const [isDashboardSettingsOpen, setIsDashboardSettingsOpen] = useState(false);
+
   return (
     <ConfigProvider locale={ruRU}>
       <BrowserRouter>
@@ -27,8 +30,11 @@ function App() {
           <Route
             path="/"
             element={
-              <MainLayout>
-                <Dashboard />
+              <MainLayout onSettingsClick={() => setIsDashboardSettingsOpen(true)}>
+                <Dashboard
+                  isSettingsOpen={isDashboardSettingsOpen}
+                  onSettingsClose={() => setIsDashboardSettingsOpen(false)}
+                />
               </MainLayout>
             }
           />
