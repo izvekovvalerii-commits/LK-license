@@ -1,0 +1,85 @@
+.create-payment-container {
+    padding: 24px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.payment-card {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.payment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.payment-title {
+    display: flex;
+    align-items: center;
+}
+
+.payment-tabs .ant-tabs-nav {
+    margin-bottom: 24px;
+}
+
+.payment-section {
+    background: #fafafa;
+}
+
+.payment-section .ant-card-head {
+    background: white;
+    border-bottom: 1px solid #f0f0f0;
+    font-weight: 600;
+}
+
+.payment-section .ant-card-body {
+    background: white;
+}
+
+.payment-info-card {
+    background: #fafafa;
+    height: 100%;
+}
+
+.payment-info-card .ant-card-head {
+    background: white;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.payment-info-card .ant-card-body {
+    background: white;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 24px;
+}
+
+.info-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+}
+
+.payment-section .ant-form-item-label>label {
+    font-weight: 500;
+}
+
+.payment-section .ant-form-item-label>label::before {
+    content: '*';
+    color: #ff4d4f;
+    margin-right: 4px;
+    font-size: 14px;
+}
+
+.payment-section .ant-select-selector {
+    border-radius: 4px;
+}
+
+.create-payment-container .ant-empty {
+    padding: 48px 0;
+}

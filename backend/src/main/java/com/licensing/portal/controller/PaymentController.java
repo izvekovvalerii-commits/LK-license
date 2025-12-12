@@ -2,18 +2,18 @@ package com.licensing.portal.controller;
 
 import com.licensing.portal.dto.PaymentRequest;
 import com.licensing.portal.dto.PaymentResponse;
-import com.licensing.portal.dto.UpdatePaymentStatusRequest;
+import com.licensing.portal.model.Payment;
 import com.licensing.portal.service.PaymentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/payments")
+@RequestMapping("/api/payments")
+@CrossOrigin(origins = "*")
 public class PaymentController {
 
     private final PaymentService paymentService;
@@ -24,28 +24,23 @@ public class PaymentController {
 
     @PostMapping
     public ResponseEntity<PaymentResponse> createPayment(@Valid @RequestBody PaymentRequest request) {
-        PaymentResponse response = paymentService.createPayment(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        return ResponseEntity.ok(paymentService.createPayment(request));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<PaymentResponse>> getAllPayments() {
+        return ResponseEntity.ok(paymentService.getAllPayments());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<PaymentResponse> getPaymentById(@PathVariable Long id) {
+        return ResponseEntity.ok(paymentService.getPaymentById(id));
     }
 
     @PutMapping("/{id}/status")
     public ResponseEntity<PaymentResponse> updatePaymentStatus(
             @PathVariable Long id,
-            @Valid @RequestBody UpdatePaymentStatusRequest request) {
-        PaymentResponse response = paymentService.updatePaymentStatus(id, request.getStatus());
-        return ResponseEntity.ok(response);
+            @RequestParam Payment.PaymentStatus status) {
+        return ResponseEntity.ok(paymentService.updatePaymentStatus(id, status));
     }
-
-    @GetMapping
-    public ResponseEntity<List<PaymentResponse>> getAllPayments() {
-        List<PaymentResponse> payments = paymentService.getAllPayments();
-        return ResponseEntity.ok(payments);
-    }
-
-    @GetMapping("/task/{taskId}")
-    public ResponseEntity<List<PaymentResponse>> getPaymentsByTaskId(@PathVariable Long taskId) {
-        List<PaymentResponse> payments = paymentService.getPaymentsByTaskId(taskId);
-        return ResponseEntity.ok(payments);
-    }
-
 }

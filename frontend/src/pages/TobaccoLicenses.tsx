@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Input, Tag, Space, Card, message } from 'antd';
-import { SearchOutlined, PhoneOutlined, EnvironmentOutlined } from '@ant-design/icons';
+import { SearchOutlined, PhoneOutlined, EnvironmentOutlined, SafetyCertificateOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 import { storeService } from '../services/storeService';
 import type { Store } from '../types';
@@ -48,6 +48,13 @@ const TobaccoLicenses: React.FC = () => {
 
     const columns: ColumnsType<Store> = [
         {
+            title: '№',
+            dataIndex: 'id',
+            key: 'id',
+            width: 60,
+            fixed: 'left',
+        },
+        {
             title: 'Название',
             dataIndex: 'name',
             key: 'name',
@@ -60,6 +67,12 @@ const TobaccoLicenses: React.FC = () => {
                 return record.name.toLowerCase().includes(search) ||
                     record.address.toLowerCase().includes(search);
             },
+            render: (text: string) => (
+                <Space>
+                    <SafetyCertificateOutlined style={{ color: '#faad14' }} />
+                    <strong>{text}</strong>
+                </Space>
+            ),
         },
         {
             title: 'Адрес',
@@ -67,10 +80,10 @@ const TobaccoLicenses: React.FC = () => {
             key: 'address',
             width: 300,
             render: (address) => (
-                <span>
-                    <EnvironmentOutlined style={{ marginRight: 8, color: '#1890ff' }} />
+                <Space>
+                    <EnvironmentOutlined style={{ color: '#8c8c8c' }} />
                     {address}
-                </span>
+                </Space>
             ),
         },
         {
@@ -79,17 +92,17 @@ const TobaccoLicenses: React.FC = () => {
             key: 'directorPhone',
             width: 180,
             render: (phone) => (
-                <span>
-                    <PhoneOutlined style={{ marginRight: 8, color: '#52c41a' }} />
+                <Space>
+                    <PhoneOutlined style={{ color: '#52c41a' }} />
                     {phone}
-                </span>
+                </Space>
             ),
         },
         {
             title: 'Табачная лицензия',
             dataIndex: 'tobaccoLicenseExpiry',
             key: 'tobaccoLicenseExpiry',
-            width: 200,
+            width: 250,
             render: (expiry) => {
                 const { text, color } = getLicenseStatus(expiry);
                 return <Tag color={color}>{text}</Tag>;
@@ -106,28 +119,28 @@ const TobaccoLicenses: React.FC = () => {
 
     return (
         <div className="stores-container">
-            <Card
-                title="Табачные лицензии"
-                extra={
-                    <Space>
-                        <Input
-                            placeholder="Поиск по названию или адресу"
-                            prefix={<SearchOutlined />}
-                            value={searchText}
-                            onChange={(e) => setSearchText(e.target.value)}
-                            style={{ width: 300 }}
-                            allowClear
-                        />
-                    </Space>
-                }
-            >
+            <Card>
+                <div className="stores-header">
+                    <h1>
+                        <SafetyCertificateOutlined /> Табачные лицензии
+                    </h1>
+                    <Input
+                        placeholder="Поиск по названию или адресу"
+                        prefix={<SearchOutlined />}
+                        value={searchText}
+                        onChange={(e) => setSearchText(e.target.value)}
+                        style={{ width: 350 }}
+                        allowClear
+                    />
+                </div>
+
                 <Table
                     columns={columns}
                     dataSource={stores}
                     rowKey="id"
                     loading={loading}
                     pagination={{
-                        pageSize: 20,
+                        pageSize: 10,
                         showSizeChanger: true,
                         showTotal: (total) => `Всего записей: ${total}`,
                         pageSizeOptions: ['10', '20', '50', '100'],

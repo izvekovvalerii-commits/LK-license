@@ -8,7 +8,6 @@ import java.util.List;
 
 @Repository
 public interface PaymentRepository extends JpaRepository<Payment, Long> {
-    List<Payment> findByTaskId(Long taskId);
 
     List<Payment> findByStatus(Payment.PaymentStatus status);
 }

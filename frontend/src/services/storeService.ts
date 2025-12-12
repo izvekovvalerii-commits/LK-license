@@ -30,8 +30,10 @@ export const storeService = {
         totalStores: number;
         activeAlcohol: number;
         expiringAlcohol: number;
+        expiredAlcohol: number;
         activeTobacco: number;
         expiringTobacco: number;
+        expiredTobacco: number;
     }> {
         const stores = await this.getAllStores();
         const threeMonthsFromNow = new Date();
@@ -42,8 +44,10 @@ export const storeService = {
             totalStores: stores.filter(s => s.isActive).length,
             activeAlcohol: 0,
             expiringAlcohol: 0,
+            expiredAlcohol: 0,
             activeTobacco: 0,
             expiringTobacco: 0,
+            expiredTobacco: 0,
         };
 
         stores.forEach(store => {
@@ -57,6 +61,9 @@ export const storeService = {
                     if (expiryDate <= threeMonthsFromNow) {
                         stats.expiringAlcohol++;
                     }
+                } else {
+                    // License has expired
+                    stats.expiredAlcohol++;
                 }
             }
 
@@ -68,6 +75,9 @@ export const storeService = {
                     if (expiryDate <= threeMonthsFromNow) {
                         stats.expiringTobacco++;
                     }
+                } else {
+                    // License has expired
+                    stats.expiredTobacco++;
                 }
             }
         });

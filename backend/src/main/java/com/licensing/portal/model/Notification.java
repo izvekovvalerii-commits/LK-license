@@ -23,10 +23,6 @@ public class Notification {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "task_id")
-    private Task task;
-
     @Column(nullable = false, columnDefinition = "TEXT")
     private String message;
 
@@ -60,14 +56,6 @@ public class Notification {
 
     public void setUser(User user) {
         this.user = user;
-    }
-
-    public Task getTask() {
-        return task;
-    }
-
-    public void setTask(Task task) {
-        this.task = task;
     }
 
     public String getMessage() {
