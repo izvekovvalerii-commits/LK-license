@@ -1,3 +1,4 @@
+# General
 node_modules
 dist
 out
@@ -12,3 +13,26 @@ obj
 .angular
 .gemini
 .agent
+
+# Editor/OS files
+*.swp
+*.swo
+*~
+Thumbs.db
+
+# Database
+*.db
+*.db-journal
+
+# Specific paths (merged)
+backend/target/
+backend/.mvn/
+backend/mvnw
+backend/mvnw.cmd
+backend/*.iml
+backend/.settings/
+backend/.classpath
+backend/.project
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
