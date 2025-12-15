@@ -1,0 +1,14 @@
+node_modules
+dist
+out
+build
+bin
+obj
+.idea
+.vscode
+.DS_Store
+*.log
+~$*
+.angular
+.gemini
+.agent

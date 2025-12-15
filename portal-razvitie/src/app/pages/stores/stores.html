@@ -1,0 +1,56 @@
+<div class="stores-page">
+    <div class="page-header">
+        <h1 class="page-title">Магазины</h1>
+        <div class="title-underline"></div>
+    </div>
+
+    <div class="stores-container" *ngIf="!loading && !error">
+        <div class="stores-grid">
+            <div class="store-card" *ngFor="let store of stores">
+                <div class="store-header">
+                    <h3 class="store-name">{{ store.name }}</h3>
+                    <span class="store-status" [ngClass]="getStatusClass(store.status)">
+                        {{ getStatusText(store.status) }}
+                    </span>
+                </div>
+
+                <div class="store-info">
+                    <div class="info-row">
+                        <span class="info-label">Код:</span>
+                        <span class="info-value">{{ store.code }}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Адрес:</span>
+                        <span class="info-value">{{ store.address }}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Город:</span>
+                        <span class="info-value">{{ store.city }}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Регион:</span>
+                        <span class="info-value">{{ store.region }}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Общая площадь:</span>
+                        <span class="info-value">{{ store.totalArea }} м²</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Торговая площадь:</span>
+                        <span class="info-value">{{ store.tradeArea }} м²</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="loading" *ngIf="loading">
+        <div class="spinner"></div>
+        <p>Загрузка...</p>
+    </div>
+
+    <div class="error" *ngIf="error">
+        <p>{{ error }}</p>
+        <button (click)="loadStores()">Попробовать снова</button>
+    </div>
+</div>

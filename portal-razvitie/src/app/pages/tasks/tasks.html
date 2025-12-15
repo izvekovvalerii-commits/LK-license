@@ -1,0 +1,75 @@
+<div class="tasks-page">
+    <!-- Header -->
+    <div class="page-header">
+        <div class="header-left">
+            <h1 class="page-title">Задачи</h1>
+            <div class="title-underline"></div>
+            <p class="page-subtitle">Все задачи по всем проектам</p>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="filters-section">
+        <div class="search-box">
+            <span class="search-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+            </span>
+            <input type="text" placeholder="Поиск задачи..." [(ngModel)]="searchQuery" (input)="filterTasks()">
+        </div>
+        <select class="filter-select" [(ngModel)]="statusFilter" (change)="filterTasks()">
+            <option value="">Все статусы</option>
+            <option *ngFor="let status of taskStatuses" [value]="status">{{ status }}</option>
+        </select>
+    </div>
+
+    <!-- Loading State -->
+    <div class="loading-state" *ngIf="loading">
+        <p>Загрузка задач...</p>
+    </div>
+
+    <!-- Table -->
+    <div class="tasks-table-container" *ngIf="!loading && filteredTasks.length > 0">
+        <table class="tasks-table">
+            <thead>
+                <tr>
+                    <th>Название</th>
+                    <th>Проект</th>
+                    <th>Тип</th>
+                    <th>Статус</th>
+                    <th>Ответственный</th>
+                    <th>Срок</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let task of filteredTasks">
+                    <td class="task-name">{{ task.name }}</td>
+                    <td><span class="project-id-badge">#{{ task.projectId }}</span></td>
+                    <td>{{ task.taskType }}</td>
+                    <td>
+                        <span class="status-badge" [ngClass]="getStatusClass(task.status)">
+                            {{ task.status }}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="responsible-cell">
+                            <div class="resp-avatar">{{ getInitials(task.responsible) }}</div>
+                            <span>{{ task.responsible }}</span>
+                        </div>
+                    </td>
+                    <td [ngClass]="getDeadlineClass(task.normativeDeadline)">
+                        {{ task.normativeDeadline | date:'dd.MM.yyyy' }}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="!loading && filteredTasks.length === 0">
+        <p>Задачи не найдены</p>
+    </div>
+</div>
