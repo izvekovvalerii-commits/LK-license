@@ -244,3 +244,32 @@
 .ant-card {
     transition: box-shadow 0.2s ease;
 }
+
+/* Dashboard Tile Animation */
+.dashboard-tile {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.dashboard-tile:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1) !important;
+    border-color: #d9d9d9 !important;
+}
+
+/* Icon Animation on Tile Hover */
+@keyframes iconPulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.15);
+    }
+}
+
+.dashboard-tile:hover .anticon,
+.dashboard-tile:hover svg {
+    animation: iconPulse 0.6s ease-in-out;
+}

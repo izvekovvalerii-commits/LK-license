@@ -4,10 +4,17 @@ import type { Payment, PaymentStatus, PaymentType } from '../types';
 const PAYMENT_URL = '/payments';
 
 interface CreatePaymentRequest {
-    taskId: number;
+    taskId?: number;
     amount: number;
-    notes?: string;
     type?: PaymentType;
+    region?: string;
+    retailNetwork?: string;
+    legalEntity?: string;
+    paymentRecipient?: string;
+    oktmo?: string;
+    bankMarkRequired?: boolean;
+    notes?: string;
+    storeIds?: number[];
 }
 
 export const paymentService = {

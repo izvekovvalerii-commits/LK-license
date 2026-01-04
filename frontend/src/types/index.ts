@@ -23,81 +23,20 @@ export interface LoginResponse {
     roles: string[];
 }
 
-export const LicenseType = {
-    ALCOHOL: 'ALCOHOL',
-    TOBACCO: 'TOBACCO',
-} as const;
-
-export type LicenseType = typeof LicenseType[keyof typeof LicenseType];
-
-export const ActionType = {
-    NEW: 'NEW',
-    RENEWAL: 'RENEWAL',
-} as const;
-
-export type ActionType = typeof ActionType[keyof typeof ActionType];
-
-export const TaskStatus = {
-    ASSIGNED: 'ASSIGNED',
-    IN_PROGRESS: 'IN_PROGRESS',
-    SUSPENDED: 'SUSPENDED',
-    DONE: 'DONE',
-} as const;
-
-export type TaskStatus = typeof TaskStatus[keyof typeof TaskStatus];
-
-export const SubtaskType = {
-    GIS_ANALYSIS: 'GIS_ANALYSIS',
-    DOCUMENT_UPLOAD: 'DOCUMENT_UPLOAD',
-    STATE_FEE_PAYMENT: 'STATE_FEE_PAYMENT',
-    EGRN_REQUEST: 'EGRN_REQUEST',
-    FIAS_ADDRESS_CHECK: 'FIAS_ADDRESS_CHECK',
-} as const;
-
-export type SubtaskType = typeof SubtaskType[keyof typeof SubtaskType];
-
-export interface Task {
+export interface Region {
     id: number;
-    title: string;
-    description?: string;
-    licenseType: LicenseType;
-    actionType: ActionType;
-    status: TaskStatus;
-    statusReason?: string;
-    storeId?: number;
-    storeName?: string;
-    assigneeId?: number;
-    assigneeName?: string;
-    createdById?: number;
-    createdByName?: string;
-    deadlineDate?: string;
-    createdAt: string;
+    licenseType?: string;
+    name: string;
+    regionCode?: string;
+    regionGiid?: string;
+    counterpartyCode?: string;
+    counterpartyInn?: string;
+    kpp?: string;
+    settlementBik?: string;
+    createdAt?: string;
     updatedAt?: string;
-    documentCount: number;
-    paymentCount: number;
-    parentTaskId?: number;
-    subtaskType?: SubtaskType;
-    plannedStartDate?: string;
-    plannedEndDate?: string;
-    actualStartDate?: string;
-    actualEndDate?: string;
-    subtasks?: Task[];
 }
 
-export interface TaskRequest {
-    title: string;
-    description?: string;
-    licenseType: LicenseType;
-    actionType: ActionType;
-    storeId?: number;
-    assigneeId?: number;
-    deadlineDate?: string;
-    status?: TaskStatus;
-    statusReason?: string;
-    subtaskType?: SubtaskType;
-    plannedStartDate?: string;
-    plannedEndDate?: string;
-}
 
 export interface Store {
     id: number;
@@ -140,12 +79,17 @@ export type PaymentType = typeof PaymentType[keyof typeof PaymentType];
 
 export interface Payment {
     id: number;
-    taskId: number;
+    taskId?: number;
     amount: number;
     status: PaymentStatus;
     type: PaymentType;
     paymentDate?: string;
+    paymentReference?: string;
     notes?: string;
     createdAt: string;
-    updatedAt?: string;
+    region?: string;
+    retailNetwork?: string;
+    legalEntity?: string;
+    paymentRecipient?: string;
+    storeIds?: number[];
 }

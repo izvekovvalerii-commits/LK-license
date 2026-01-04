@@ -20,6 +20,14 @@ public class PaymentResponse {
 
     private Payment.PaymentType type;
 
+    private String region;
+    private String retailNetwork;
+    private String legalEntity;
+    private String paymentRecipient;
+    private java.util.List<Long> storeIds;
+    private String oktmo;
+    private Boolean bankMarkRequired;
+
     public Long getId() {
         return id;
     }
@@ -98,5 +106,61 @@ public class PaymentResponse {
 
     public void setNotes(String notes) {
         this.notes = notes;
+    }
+
+    public String getRegion() {
+        return region;
+    }
+
+    public void setRegion(String region) {
+        this.region = region;
+    }
+
+    public String getRetailNetwork() {
+        return retailNetwork;
+    }
+
+    public void setRetailNetwork(String retailNetwork) {
+        this.retailNetwork = retailNetwork;
+    }
+
+    public String getLegalEntity() {
+        return legalEntity;
+    }
+
+    public void setLegalEntity(String legalEntity) {
+        this.legalEntity = legalEntity;
+    }
+
+    public String getPaymentRecipient() {
+        return paymentRecipient;
+    }
+
+    public void setPaymentRecipient(String paymentRecipient) {
+        this.paymentRecipient = paymentRecipient;
+    }
+
+    public java.util.List<Long> getStoreIds() {
+        return storeIds;
+    }
+
+    public void setStoreIds(java.util.List<Long> storeIds) {
+        this.storeIds = storeIds;
+    }
+
+    public String getOktmo() {
+        return oktmo;
+    }
+
+    public void setOktmo(String oktmo) {
+        this.oktmo = oktmo;
+    }
+
+    public Boolean getBankMarkRequired() {
+        return bankMarkRequired;
+    }
+
+    public void setBankMarkRequired(Boolean bankMarkRequired) {
+        this.bankMarkRequired = bankMarkRequired;
     }
 }

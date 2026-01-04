@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/references/stores")
+@RequestMapping("/api/references/stores")
 public class StoreController {
 
     @Autowired
@@ -33,35 +33,36 @@ public class StoreController {
         return ResponseEntity.ok(savedStore);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Store> updateStore(@PathVariable Long id, @RequestBody Store storeDetails) {
-        Store store = storeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Store not found"));
+    // @PutMapping("/{id}")
+    // public ResponseEntity<Store> updateStore(@PathVariable Long id, @RequestBody
+    // Store storeDetails) {
+    // Store store = storeRepository.findById(id)
+    // .orElseThrow(() -> new RuntimeException("Store not found"));
 
-        store.setName(storeDetails.getName());
-        store.setMvz(storeDetails.getMvz());
-        store.setAddress(storeDetails.getAddress());
-        store.setCfo(storeDetails.getCfo());
-        store.setOktmo(storeDetails.getOktmo());
-        store.setHasRestriction(storeDetails.getHasRestriction());
-        store.setMunArea(storeDetails.getMunArea());
-        store.setMunDistrict(storeDetails.getMunDistrict());
-        store.setBe(storeDetails.getBe());
-        store.setCloseDate(storeDetails.getCloseDate());
-        store.setInn(storeDetails.getInn());
-        store.setKpp(storeDetails.getKpp());
-        store.setContactPerson(storeDetails.getContactPerson());
-        store.setPhone(storeDetails.getPhone());
-        store.setEmail(storeDetails.getEmail());
-        store.setIsActive(storeDetails.getIsActive());
+    // store.setName(storeDetails.getName());
+    // store.setMvz(storeDetails.getMvz());
+    // store.setAddress(storeDetails.getAddress());
+    // store.setCfo(storeDetails.getCfo());
+    // store.setOktmo(storeDetails.getOktmo());
+    // store.setHasRestriction(storeDetails.getHasRestriction());
+    // store.setMunArea(storeDetails.getMunArea());
+    // store.setMunDistrict(storeDetails.getMunDistrict());
+    // store.setBe(storeDetails.getBe());
+    // store.setCloseDate(storeDetails.getCloseDate());
+    // store.setInn(storeDetails.getInn());
+    // store.setKpp(storeDetails.getKpp());
+    // store.setContactPerson(storeDetails.getContactPerson());
+    // store.setPhone(storeDetails.getPhone());
+    // store.setEmail(storeDetails.getEmail());
+    // store.setIsActive(storeDetails.getIsActive());
 
-        Store updatedStore = storeRepository.save(store);
-        return ResponseEntity.ok(updatedStore);
-    }
+    // Store updatedStore = storeRepository.save(store);
+    // return ResponseEntity.ok(updatedStore);
+    // }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteStore(@PathVariable Long id) {
-        storeRepository.deleteById(id);
-        return ResponseEntity.noContent().build();
-    }
+    // @DeleteMapping("/{id}")
+    // public ResponseEntity<Void> deleteStore(@PathVariable Long id) {
+    // storeRepository.deleteById(id);
+    // return ResponseEntity.noContent().build();
+    // }
 }

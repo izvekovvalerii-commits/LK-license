@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Button, Modal, Form, Input, message, Space, Tag, Card } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined, ShopOutlined } from '@ant-design/icons';
+import { PlusOutlined, DeleteOutlined, ShopOutlined } from '@ant-design/icons';
 import { storeService } from '../services/storeService';
 import type { Store } from '../types';
 import './Stores.css';
@@ -35,30 +35,9 @@ const Stores: React.FC = () => {
         setIsModalVisible(true);
     };
 
-    const handleEdit = (store: Store) => {
-        setEditingStore(store);
-        form.setFieldsValue(store);
-        setIsModalVisible(true);
-    };
 
-    const handleDelete = (id: number) => {
-        Modal.confirm({
-            title: 'Удалить магазин?',
-            content: 'Это действие нельзя отменить',
-            okText: 'Удалить',
-            okType: 'danger',
-            cancelText: 'Отмена',
-            onOk: async () => {
-                try {
-                    // await storeService.deleteStore(id);
-                    message.success('Магазин удален');
-                    loadStores();
-                } catch (error) {
-                    message.error('Ошибка удаления магазина');
-                }
-            },
-        });
-    };
+
+
 
     const handleSubmit = async (values: any) => {
         try {
@@ -188,27 +167,7 @@ const Stores: React.FC = () => {
                 </Tag>
             ),
         },
-        {
-            title: 'Действия',
-            key: 'actions',
-            width: 120,
-            fixed: 'right' as const,
-            render: (_: any, record: Store) => (
-                <Space>
-                    <Button
-                        type="link"
-                        icon={<EditOutlined />}
-                        onClick={() => handleEdit(record)}
-                    />
-                    <Button
-                        type="link"
-                        danger
-                        icon={<DeleteOutlined />}
-                        onClick={() => handleDelete(record.id)}
-                    />
-                </Space>
-            ),
-        },
+
     ];
 
     return (
